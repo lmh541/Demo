@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.divus.home.vo.AdminVO"><!--namespace를 통해 UserDAO와 연결합니다. -->
+    <select id="selectAdmin" parameterType="adminVO" resultType="adminVO"><!-- selectUsers()메서드를 호출하면 실행할 SELECT문이며, 
+                            UserDTO 객체를 파라미터로 받아, UserDTO객체를 반환합니다.-->
+        select * from tbl_user_info WHERE id=#{id} and is_delete=0;
+    </select>
+
+    <resultMap id="adminListMap" type="HashMap">
+        <result column="company" property="company"/>
+        <result column="reg_date" property="reg_date"/>
+        <result column="name" property="name"/>
+        <result column="id" property="id"/>
+        <result column="ceo" property="ceo"/>
+        <result column="tel" property="tel"/>
+        <result column="user_perm" property="user_perm"/>
+        <result column="menu_func" property="menu_func"/>
+    </resultMap>
+    <select id="selectAllAdmin" resultMap="adminListMap">
+        select tbl_company_info.company, tbl_user_info.idx, tbl_user_info.reg_date, tbl_user_info.name, tbl_user_info.id, tbl_company_info.ceo, tbl_user_info.tel, tbl_user_info.user_perm, tbl_user_info.menu_func, tbl_user_info.is_delete
+        from tbl_user_info inner join tbl_company_info
+        on tbl_user_info.company_info_idx = tbl_company_info.idx AND tbl_user_info.is_delete=0;
+    </select>
+
+    <resultMap id="userInfoMap" type="HashMap">
+        <result column="company" property="company"/>
+        <result column="ceo" property="ceo"/>
+        <result column="idx" property="idx"/>
+        <result column="company_info_idx" property="company_info_idx"/>
+        <result column="name" property="name"/>
+        <result column="id" property="id"/>
+        <result column="pw" property="pw"/>
+        <result column="tel" property="tel"/>
+        <result column="user_perm" property="user_perm"/>
+        <result column="menu_func" property="menu_func"/>
+        <result column="mod_date" property="mod_date"/>
+        <result column="is_delete" property="is_delete"/>
+    </resultMap>
+    <select id="updateUserInfo" resultMap="userInfoMap">
+        select
+            tbl_company_info.company, 
+            tbl_company_info.ceo,
+            tbl_company_info.is_delete,
+            tbl_user_info.idx,
+            tbl_user_info.company_info_idx,
+            tbl_user_info.name,
+            tbl_user_info.id,
+            tbl_user_info.pw,
+            tbl_user_info.tel,
+            tbl_user_info.user_perm,
+            tbl_user_info.menu_func         
+        from tbl_user_info
+        left join tbl_company_info on tbl_user_info.company_info_idx=tbl_company_info.idx
+        where tbl_user_info.idx=#{idx};
+    </select>
+
+    <select id="selectMenu" parameterType="adminVO" resultType="adminVO">
+        SELECT * FROM tbl_user_info where idx = #{idx} and menu_func = #{menu_func} and is_delete=0;
+    </select>
+
+    <insert id="userInsert" parameterType="hashMap" useGeneratedKeys="true" keyColumn="idx" keyProperty="idx">
+        INSERT INTO tbl_user_info(company_info_idx, name, id, pw, tel, user_perm, menu_func, reg_date, mod_date, is_delete) VALUES(#{company_info_idx},#{name},#{id},#{pw},#{tel},#{user_perm},#{menu_func},now(),now(),0);
+    </insert>
+
+    <update id="updateUser" parameterType="hashMap" useGeneratedKeys="true" keyColumn="idx" keyProperty="idx">
+        UPDATE tbl_user_info
+        SET 
+            company_info_idx = #{company_info_idx},
+            name=#{name},
+            id=#{id},
+            pw=#{pw},
+            tel=#{tel},
+            user_perm=#{user_perm},
+            menu_func=#{menu_func},
+            mod_date=now()
+        WHERE
+            idx=#{idx};
+    </update>
+
+    <update id="userDelete" parameterType="adminVO">
+        UPDATE tbl_user_info
+        SET is_delete=#{is_delete} WHERE idx=#{idx};
+    </update>
+    
+</mapper>

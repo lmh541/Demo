@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.co.divus.home.vo.CompanyVO"><!--namespace를 통해 UserDAO와 연결합니다. -->
+    <resultMap id="userCompInfoMap" type="HashMap">
+        <result column="idx" property="idx"/>
+        <result column="count" property="count"/>
+        <result column="company" property="company"/>
+        <result column="name" property="name"/>
+        <result column="reg_date" property="reg_date"/>
+        <result column="address" property="address"/>
+    </resultMap>
+    <select id="selectAllCompany" resultMap="userCompInfoMap">
+        select a.idx, a.company, a.address, CONVERT(a.reg_date, CHAR) as reg_date, ifnull(b.count,0) as count from(
+            select idx, company, address, reg_date
+            from tbl_company_info
+            where is_delete=0
+            group by idx, company
+        ) a left join(
+            select company_info_idx, count(company_info_idx) as count
+            from tbl_user_info
+            where is_delete=0
+            group by company_info_idx
+        ) b on a.idx = b.company_info_idx;
+    </select>
+    
+    <resultMap id="searchInfoMap" type="HashMap">
+        <result column="idx" property="idx"/>
+        <result column="count" property="count"/>
+        <result column="company" property="company"/>
+        <result column="name" property="name"/>
+        <result column="reg_date" property="reg_date"/>
+        <result column="address" property="address"/>
+    </resultMap>
+    <select id="companySearch" resultMap="searchInfoMap">
+        select a.idx, a.company, a.address, CONVERT(a.reg_date, CHAR) as reg_date, ifnull(b.count,0) as count from(
+            select idx, company, address, reg_date
+            from tbl_company_info
+            where is_delete=0 AND company like CONCAT('%', #{inputText}, '%')
+            group by idx, company
+        ) a left join(
+            select company_info_idx, count(company_info_idx) as count
+            from tbl_user_info
+            where is_delete=0
+            group by company_info_idx
+        ) b on a.idx = b.company_info_idx
+        
+    </select>
+
+    <select id="userSearch" resultMap="searchInfoMap">
+        select b.idx, b.company, b.address, CONVERT(a.reg_date, CHAR) as reg_date, a.name from(
+			select company_info_idx, count(company_info_idx) as count, name, reg_date
+				from tbl_user_info
+				where is_delete=0  AND name like CONCAT('%', #{inputText}, '%')
+				group by company_info_idx, name, reg_date
+        ) a left join(
+            select idx, company, address, reg_date
+            from tbl_company_info
+            where is_delete=0
+            group by idx, company
+        ) b on b.idx = a.company_info_idx; 
+    </select>
+
+    <select id="selectCompany" parameterType="companyVO" resultType="companyVO">
+        select
+            tbl_company_info.idx,
+            (select count(idx) from tbl_user_info where company_info_idx = tbl_company_info.idx and is_delete=0) as count,
+            tbl_company_info.company,
+            tbl_company_info.reg_date,
+            tbl_company_info.address,
+            tbl_company_info.company,
+            tbl_company_info.ceo,
+            tbl_company_info.tel_main,
+            tbl_company_info.business_num
+        from tbl_company_info
+        where is_delete=0;
+    </select>
+
+    <resultMap id="CompanyCeoMap" type="HashMap">
+        <result column="company" property="company"/>
+        <result column="ceo" property="ceo"/>
+        <result column="is_delete" property="is_delete"/>
+    </resultMap>
+    <select id="selectCompanyCeo" resultMap="CompanyCeoMap">
+        select idx, company, ceo, is_delete from tbl_company_info;
+    </select>
+
+    <resultMap id="compInfoMap" type="HashMap">
+        <result column="company" property="company"/>
+        <result column="ceo" property="ceo"/>
+        <result column="idx" property="idx"/>
+        <result column="tel_main" property="tel_main"/>
+        <result column="tel_sub" property="tel_sub"/>
+        <result column="address" property="address"/>
+        <result column="is_delete" property="is_delete"/>
+    </resultMap>
+    <select id="updateSelect" resultMap="compInfoMap">
+        select idx, business_num, company, ceo, tel_main, tel_sub, address from tbl_company_info WHERE idx=#{idx};
+    </select>
+
+    <insert id="insertAllCompany" parameterType="companyVO">
+        INSERT INTO tbl_company_info(business_num, company, ceo, tel_main, tel_sub, address, reg_date, mod_date, is_delete) VALUES(#{business_num},#{company},#{ceo},#{tel_main},#{tel_sub},#{address},sysdate(),sysdate(),#{is_delete});
+    </insert>
+
+    <update id="updateInfo" parameterType="companyVO">
+        UPDATE tbl_company_info
+        SET business_num=#{business_num}, mod_date=now(), company=#{company}, ceo=#{ceo}, tel_main=#{tel_main}, tel_sub=#{tel_sub}, address=#{address}
+        WHERE idx=#{idx};
+    </update>
+
+    <update id="deleteCompany">
+        UPDATE tbl_company_info c LEFT JOIN tbl_user_info u
+        ON c.idx = u.company_info_idx
+        SET c.is_delete = 1, u.is_delete = 1
+        WHERE c.idx = #{idx};
+    </update>
+
+</mapper>

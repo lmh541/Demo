@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>안녕하세요.</title>
+  </head>
+  <!-- jQuery -->
+	<script src="js/jquery.min.js"></script>
+  <script>
+$(document).ready(function() {
+    $("#submitBtn").click(()=>{
+        
+        $.ajax({
+            type: "POST",
+            url: "LoginPageTest",
+            data: JSON.stringify({"id": $('#id')[0].value, "pw": $('#pw')[0].value}),
+            contentType: "application/x-www-form-urlencoded;charset=UTF-8",
+            success: function(){
+              alert("성공 발생했습니다..");
+            },
+            error: function(){
+                alert("에러가 발생했습니다..");
+                console.log("Status : " + status);
+            }
+        })
+    });
+})
+  </script>
+  <body>
+    <form id="form" method="POST">
+      <label>ID : <input type="text" name = "id" id="id"/></label>
+      <label>PW : <input type="password" name="pw" id="pw"/></label>
+      <button id="submitBtn" type="submit">로그인</button>
+    </form>
+  </body>
+</html>

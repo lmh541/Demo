@@ -1,0 +1,210 @@
+.container{
+    background-color:#FFFFFF;
+    padding-bottom:20px;
+    margin-top:10px;
+    border-radius:5px;
+  }
+  .center{
+    text-align:center;  
+  }
+  #top{
+    margin-top:20px;  
+  }
+  .btn-container{
+    background:#fff;
+    border-radius:5px;
+    padding-bottom:20px;
+    margin-bottom:20px;
+  }
+  .fontColor{
+    color:#36ADBD;
+  }
+  .imgupload{
+    color:#1E2832;
+    padding-top:40px;
+    font-size:7em;
+  }
+  #namefile{
+    color:black;
+  }
+  h4>strong{
+    color:#ff3f3f
+  }
+  .btn-primary{
+    border-color: #36ADBD !important;
+    color: #ffffff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #36ADBD !important;
+    border-color: #36ADBD !important;
+  }
+  .btn-default{
+    border-color:#B0B3B7 !important;
+    color: #2C2F33;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.25);
+    background-color: #B0B3B7 !important;
+    border-color: #B0B3B7 !important;
+  }
+  /*these two are set to not display at start*/
+  .imgupload.ok{
+    display:none;
+    color:green;
+  }
+  .imgupload.stop{
+    display:none;
+    color:red;
+  }
+  /*this sets the actual file input to overlay our button*/ 
+  #select{
+    opacity: 0;
+    -moz-opacity: 0;
+    filter: progid:DXImageTransform.Microsoft.Alpha(opacity=0);
+    width:200px;
+    cursor: pointer;
+    position:absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 40px;
+    height: 50px;
+    }
+    
+    /*switch between input and not active input*/
+    #submit{
+        padding:5px 50px;
+        display:none;
+    }
+    #fakebtn{
+        padding:5px 40px;
+    }
+    /*www.emilianocostanzo.com*/
+    #sign{
+        color:#1E2832;
+        position:fixed;
+        right:10px;
+        bottom:10px;
+        text-shadow:0px 0px 0px #1E2832;
+        transition:all.3s;
+    }
+    #sign:hover{
+        color:#1E2832;
+        text-shadow:0px 0px 5px #1E2832;
+    }
+
+    /* 토글 스위치 */
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+      vertical-align:middle;
+    }
+    
+    /* Hide default HTML checkbox */
+    .switch input {display:none;}
+    
+    /* The slider */
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      -webkit-transition: .4s;
+      transition: .4s;
+    }
+    
+    input:checked + .slider {
+      background-color: #2196F3;
+    }
+    
+    input:focus + .slider {
+      box-shadow: 0 0 1px #2196F3;
+    }
+    
+    input:checked + .slider:before {
+      -webkit-transform: translateX(26px);
+      -ms-transform: translateX(26px);
+      transform: translateX(26px);
+    }
+
+    /* Rounded sliders */
+    .slider.round {
+      border-radius: 34px;
+    }
+    
+    .slider.round:before {
+      border-radius: 50%;
+    }
+    
+    .toggleSwitch {
+      margin:0px;
+      display:inline-block;
+      font-size:15px;
+      font-weight:bold;
+      width: 30px;
+    }
+    
+    .hover {
+      border: solid #1ACEA6 2px;
+      cursor: pointer;
+    }
+
+    .mouseout {
+      filter: none;
+    }
+
+    .hoverConfi {
+      background-color: #33B794;
+      color: white;
+    }
+
+    .mouseoutConfi {
+      background: none;
+      color: black;
+    }
+
+    .tooltipR {
+      display: inline-block;
+      position: relative;
+    }
+    
+    .tooltipP {
+      display: inline-block;
+      position: relative;
+      color: rgb(136, 98, 136)
+    }
+    
+    .tooltipY {
+      display: inline-block;
+      position: relative;
+      color: rgb(111, 146, 40)
+    }
+
+    .tooltipR .tooltipText {
+      visibility: hidden;
+      text-align: center;
+      color: rgb(153, 8, 8);
+      z-index: 55;
+      position: absolute;
+      left: 50%;
+      bottom: 77%;
+      margin-left: -60px;
+    }
+
+    .tooltipR .tooltipText::after {
+      
+    }
+    

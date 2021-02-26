@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="DoctorCarMapper"><!--namespace를 통해 DetectionDAO와 연결합니다. -->
+<!--
+    <insert id="insertDetection" parameterType="detectionVo">
+        INSERT INTO tbl_detection_info ( 
+            user_info_idx, 
+            path, 
+            src_photo, 
+            ai_photo, 
+            ai_json, 
+            ai_version,
+            ai_scratch,
+            ai_dent,
+            ai_crack,
+            reg_date,
+            is_delete
+            )
+        VALUES(
+            #{user_info_idx},
+            #{path},
+            #{src_photo},
+            #{ai_photo},
+            #{ai_json},
+            #{ai_version},
+            #{ai_scratch},
+            #{ai_dent},
+            #{ai_crack},
+            sysdate(),
+            0
+            );
+    </insert>
+
+    <select id="selectDetection" parameterType="int" resultType="detectionVo">
+        select * from tbl_detection_info WHERE idx=#{id} and is_delete=0;
+    </select>
+    
+    <select id="selectDetectionSrcPhoto" parameterType="String" resultType="detectionVo">
+        select * from tbl_detection_info WHERE src_photo=#{src_photo} and is_delete=0;
+    </select>
+-->
+
+    <resultMap id="selectAllDocMap" type="HashMap">
+        <result column="idx" property="idx"/>
+        <result column="path" property="path"/>
+        <result column="company" property="company"/>
+        <result column="src_photo" property="src_photo"/>
+        <result column="ai_photo" property="ai_photo"/>
+        <result column="ai_json" property="ai_json"/>
+        <result column="an_photo" property="an_photo"/>
+        <result column="an_json" property="an_json"/>
+        <result column="ai_version" property="ai_version"/>
+        <result column="ai_scratch" property="ai_scratch"/>
+        <result column="ai_dent" property="ai_dent"/>
+        <result column="ai_crack" property="ai_crack"/>
+        <result column="reg_date" property="reg_date"/>
+        <result column="an_scratch" property="an_scratch"/>
+        <result column="an_dent" property="an_dent"/>
+        <result column="an_crack" property="an_crack"/>
+        <result column="an_reg_date" property="an_reg_date"/>
+    </resultMap>
+    <select id="selectSearchDoc" parameterType="String" statementType="PREPARED" resultMap="selectAllDocMap">
+        select de.idx, de.path, com.company, de.src_photo, de.ai_photo, de.ai_json, de.an_photo, de.an_json, de.ai_version,
+                de.ai_scratch, de.ai_dent, de.ai_crack, CONVERT(de.reg_date, CHAR) AS reg_date, de.an_scratch, de.an_dent, de.an_crack, de.an_reg_date
+        from tbl_detection_info de, tbl_user_info us, tbl_company_info com
+        where
+            us.idx = de.user_info_idx
+            AND us.company_info_idx = com.idx
+            AND de.is_delete = 0
+        <if test="startDate != null and startDate != '' " >
+        <![CDATA[
+            AND de.reg_date >= CONCAT(#{startDate},' 00:00:00')
+        ]]>
+        </if>
+        <if test="endDate != null and endDate != '' " >
+        <![CDATA[
+            AND de.reg_date < CONCAT(#{endDate},' 23:59:59')
+        ]]>
+        </if>
+        <if test="company != null and company != '' " >
+            AND com.company like CONCAT('%', #{company}, '%')
+        </if>
+        <if test="option != null and option == 'true' ">
+            And de.an_json is not null
+        </if>
+
+        <if test="option != null and option == 'false' ">
+            And de.an_json is null
+        </if>
+        ORDER BY de.reg_date DESC
+    </select>
+</mapper>

@@ -1,0 +1,202 @@
+#divSearch{
+    margin: 40px 0 40px 0;
+}
+
+.headerInput{
+    width: 170px;
+    border: 1px solid lightgray;
+}
+
+#download {
+    border: 1px solid black;
+    border-radius: 3px;
+}
+
+#download i {
+    font-size: 20px;
+}
+
+#upload {
+    border: 1px solid black;
+    border-radius: 3px;
+}
+
+#upload i {
+    font-size: 20px;
+}
+
+#popup {
+    display: none;
+    width: 100%;
+    height: 1012px;
+    background-color: rgba(0, 0, 0, 0.8);
+    position: absolute;
+    top: -10px;
+    padding: 100px;
+    z-index: 99;
+}
+
+#popupClose {
+    float: right; 
+
+    background-color: black; 
+    color: white;
+}
+
+#popupImage {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 150px;
+}
+
+.popupImg {
+    width: 100%;
+    padding: 30px;
+}
+
+#fakeUpload {
+    border: none;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+#fakeUpload i {
+    font-size: 30px;
+}
+
+.imgName {
+    color: white;
+    font-size: 5px;
+}
+
+.name {
+    font-size: 5px;
+}
+
+#divAno2 {
+    display: none;
+    width: 100%;
+    height: 100%;
+    
+}
+
+#divAno2 > button {
+    text-align: center;
+    color: white;
+    width: 300px;
+    height: 93%;
+    border: none;
+    background-color: rgba(0, 0, 0, 0);
+}
+
+#contentsTable {
+    display: table-cell;
+}
+
+#tbody::-webkit-scrollbar{
+    width: 10px;
+    background-color: white;
+}
+
+#tbody::-webkit-scrollbar-thumb{
+    background-color: gray;
+    background-clip: padding-box;
+    border: 4px solid transparent;
+}
+
+#tbody::-webkit-scrollbar-track{
+    width: 1px;
+}
+
+#thead, #tbody {
+    display: table-cell;
+    float: left;
+    width: 100%;
+}
+
+#thead, #tbody tr {
+    display: table;
+    width: 100%;
+}
+
+#thead th, #tbody td {
+    vertical-align: middle;
+}
+
+#thead tr :nth-of-type(2), #tbody tr :nth-of-type(2) {
+    width: 500px;
+}
+
+#thead tr :nth-of-type(3), #tbody tr :nth-of-type(3) {
+    width: 400px;
+}
+
+#thead tr :nth-of-type(4), #tbody tr :nth-of-type(4),
+#thead tr :nth-of-type(5), #tbody tr :nth-of-type(5),
+#thead tr :nth-of-type(6), #tbody tr :nth-of-type(6){
+    width: 400px;
+}
+
+#tbody tr {
+    height: 100px;
+}
+
+
+#tbody td button {
+    border: none;
+    background-color: #fff;
+}
+
+#btns {
+    width: 100%;
+    border-bottom: 1px solid black;
+    padding: 10px;
+}
+
+#btns button {
+    background-color: white;
+}
+
+#funcBtns {
+    vertical-align: middle;
+}
+
+.pDiv{
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.pDiv button i {
+    color: rgb(23, 228, 166);
+    font-size: 30px;
+}
+
+#pageController{
+    display: flex;
+    justify-content: space-between;
+    padding-top: 10px;
+}
+
+.num {
+    height: 100%;
+    color: gray;
+}
+
+#pageBtns {
+    display: table-cell;
+    margin-right: 4px;
+}
+
+#pageBtns button {
+    border: none;
+    background-color: #fff;
+}
+
+#pageNum {
+    font-size: 20px;
+    height: 33px;
+}
+
+#pageNum button {
+    line-height: 100%;
+}

@@ -1,0 +1,206 @@
+<!DOCTYPE HTML>
+<!--
+	Cube by FreeHTML5.co
+	Twitter: http://twitter.com/gettemplateco
+	URL: http://freehtml5.co
+-->
+<html>
+	<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Divus</title>
+
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<meta name="description" content="Free HTML5 Website Template by FreeHTML5.co" />
+	<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
+	<meta name="author" content="FreeHTML5.co" />
+
+  	<!-- Facebook and Twitter integration -->
+	<meta property="og:title" content=""/>
+	<meta property="og:image" content=""/>
+	<meta property="og:url" content=""/>
+	<meta property="og:site_name" content=""/>
+	<meta property="og:description" content=""/>
+	<meta name="twitter:title" content="" />
+	<meta name="twitter:image" content="" />
+	<meta name="twitter:url" content="" />
+	<meta name="twitter:card" content="" />
+
+	<link rel="shortcut icon" href="divusImages/favicon.ico" type="image/x-icon">
+    <link rel="icon" href="divusImages/favicon.ico" type="image/x-icon">
+
+	<link href="https://fonts.googleapis.com/css?family=Raleway:100,300,400,700" rel="stylesheet">
+	
+	<!-- Animate.css -->
+	<link rel="stylesheet" href="css/animate.css">
+	<!-- Icomoon Icon Fonts-->
+	<link rel="stylesheet" href="css/icomoon.css">
+	<!-- Themify Icons-->
+	<link rel="stylesheet" href="css/themify-icons.css">
+	<!-- Bootstrap  -->
+	<link rel="stylesheet" href="css/bootstrap.css">
+
+	<!-- Magnific Popup -->
+	<link rel="stylesheet" href="css/magnific-popup.css">
+
+	<!-- Owl Carousel  -->
+	<link rel="stylesheet" href="css/owl.carousel.min.css">
+	<link rel="stylesheet" href="css/owl.theme.default.min.css">
+
+	<!-- Theme style  -->
+	<link rel="stylesheet" href="css/style.css">
+
+	<script src="js/jquery.min.js"></script>
+
+	<!-- Modernizr JS -->
+	<script src="js/modernizr-2.6.2.min.js"></script>
+	<!-- FOR IE9 below -->
+	<!--[if lt IE 9]>
+	<script src="js/respond.min.js"></script>
+	<![endif]-->
+
+	<style> 
+		#loading { 
+			width: 100%; 
+			height: 100%; 
+			top: 0px; 
+			left: 0px; 
+			position: fixed; 
+			display: block; 
+			opacity: 0.7; 
+			background-color: #fff; 
+			z-index: 99; text-align: 
+			center; 
+		} 
+		#loading-image { 
+			position: absolute; 
+			top: 50%;
+			left: 50%;
+			margin-top: -100px;
+			margin-left: -100px;
+			z-index: 100; 
+		}
+	</style>
+
+	</head>
+	<body>
+		<div id="loading" style="display: none;"><img id="loading-image" src="images/loading.gif" alt="Loading..."/></div>
+		
+	<div class="gtco-loader"></div>
+	
+	<div id="page">
+		<th:block th:replace="include/top.html"></th:block>
+		<header id="gtco-header" class="gtco-cover gtco-cover-xs gtco-inner" role="banner">
+			<div class="gtco-container">
+				<div class="row">
+					<div class="col-md-12 col-md-offset-0 text-left">
+						<div class="display-t">
+							<div class="display-tc">
+								<div class="row">
+									<div class="col-md-8 animate-box">
+										<h1 class="no-margin">문의하기</h1>
+										<p>문의하신 내용을 상세히 검토 후 회신 드리겠습니다.</p>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</header>
+		<!-- END #gtco-header -->
+
+		
+
+		<div class="gtco-section">
+			<div class="gtco-container">
+				<div class="row">
+					<div class="col-md-8 col-md-offset-2 gtco-heading text-center">
+						<h2>문의 내용</h2>
+						<p></p>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-12">
+						<form method="post">
+							<div class="form-group">
+								<label for="name">이름</label>
+								<input type="text" class="form-control" id="name">
+							</div>
+							<div class="form-group">
+								<label for="name">Title</label>
+								<input type="text" class="form-control" id="title" name="title">
+							</div>
+							<div class="form-group">
+								<label for="name">Email</label>
+								<input type="text" class="form-control" id="address" name="address">
+							</div>
+							<div class="form-group">
+								<label for="message"></label>
+								<textarea name="message" id="message" cols="30" rows="10" class="form-control"></textarea>
+							</div>						
+							<div class="form-group">
+								<input id="mailsubmit" class="btn btn btn-special" value="Send Message" onclick="mailSender();">
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- END .gtco-services -->
+		<th:block th:replace="include/footer.html"></th:block>
+	</div>
+
+	<div class="gototop js-top">
+		<a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+	</div>
+	
+	
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
+	<!-- jQuery -->
+	<script src="js/jquery.min.js"></script>
+	<!-- jQuery Easing -->
+	<script src="js/jquery.easing.1.3.js"></script>
+	<!-- Bootstrap -->
+	<script src="js/bootstrap.min.js"></script>
+	<!-- Waypoints -->
+	<script src="js/jquery.waypoints.min.js"></script>
+	<!-- Carousel -->
+	<script src="js/owl.carousel.min.js"></script>
+	<!-- Magnific Popup -->
+	<script src="js/jquery.magnific-popup.min.js"></script>
+	<script src="js/magnific-popup-options.js"></script>
+	<!-- Main -->
+	<script src="js/main.js"></script>
+	<!-- Login -->
+	<script src="js/userLogin.js"></script>
+
+	<script>
+		function mailSender() {
+			$("#loading").show();
+			var title;
+			var address;
+			var message;
+			$.ajax({
+				type: "POST",
+				url: "/contact",
+				data:{
+					title: $('#title').val(),
+					address: $('#address').val(),
+					message: "보낸 사람 : " + $('#address').val()+"\n\n"+ $('#message').val()
+				},
+				success: function(response){
+					$("#loading").fadeOut("slow");
+					alert("전송 완료했습니다.");
+					location.href = "/contact";
+				},
+				error:function(error){
+					$("#loading").fadeOut("slow");
+					alert("전송 실패하였습니다.");
+				}
+			})
+		}
+	</script>
+	</body>
+</html>
+

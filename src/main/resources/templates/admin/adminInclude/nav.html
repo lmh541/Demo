@@ -1,0 +1,47 @@
+<style >
+    #navbar {
+        width: 200px;
+        height: 1200px;
+    }
+
+    #navbar .btn {
+        width: 100%;
+        text-align: left;
+        border-bottom: 1px solid #2a269b;
+        border-radius: 0px;
+    }
+
+    .dropdown-menu {
+        width: 177px;
+    }
+    
+    a{
+        color: white;
+        text-decoration: none;
+        height: 100%;
+    }
+    a:hover{ color: white; }
+</style>
+
+<div id="navbar">
+    <div class="list-group" style="height: 100%">
+        <div class="dropdown">
+            <button class="btn btn-primary dropdown-toggle" type="button" id="businessManagement" data-bs-toggle="dropdown" aria-expanded="false" autocomplete="off">
+                고객관리
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="businessManagement">
+                <li><a class="dropdown-item" href="/admin/">고객 현황</a></li>
+                <li><a class="dropdown-item" href="/company/BusinessRegistration">업체 등록</a></li>
+                <li><a class="dropdown-item" href="/admin/UserRegistration">사용자 등록</a></li>
+            </ul>
+        </div>
+        <div>
+            <button class="btn btn-primary dropdown-toggle" type="button" id="service" data-bs-toggle="dropdown" aria-expanded="false" autocomplete="off"><a href="">서비스</a></button>
+            <ul class="dropdown-menu" aria-labelledby="service">
+                <li><a class="dropdown-item" href="/admin/annotation">Annotation</a></li>
+                <li><a class="dropdown-item" href="/admin/doc">Doctor Car</a></li>
+            </ul>
+        </div>
+        <a href="#" class="list-group-item list-group-item-action"></a>
+    </div>
+</div>
