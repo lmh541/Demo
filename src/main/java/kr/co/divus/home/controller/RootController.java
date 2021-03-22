@@ -152,7 +152,6 @@ public class RootController {
       return "textRec";
    }
 
-
    @GetMapping("/logout")
    public String logout(HttpServletRequest req) {
       HttpSession session = req.getSession(true);
@@ -181,8 +180,6 @@ public class RootController {
       }
       return "demoTest4";
    }
-
-   
 
    @RequestMapping("/DemoTypeSeg")
    public String seg(HttpServletRequest req, RedirectAttributes rttr) {
@@ -225,6 +222,11 @@ public class RootController {
          return "login";
       }
       return "demoTest2";
+   }
+
+   @GetMapping("/vin")
+   public String vin() {
+      return "vin";
    }
 
    @RequestMapping("/contact")
