@@ -139,6 +139,20 @@ public class RootController {
       }
    }
 
+   @RequestMapping("/textRecognition")
+   public String textRec(HttpServletRequest req, RedirectAttributes rttr, Model model) {
+      HttpSession session = req.getSession();
+      if (checkSession((String) session.getAttribute("user_idx"),
+            (String) session.getAttribute("menu_func")) == false) {
+         // session.invalidate();
+         session.setAttribute("page", "textRecognition");
+
+         return "login";
+      }
+      return "textRec";
+   }
+
+
    @GetMapping("/logout")
    public String logout(HttpServletRequest req) {
       HttpSession session = req.getSession(true);
@@ -168,10 +182,7 @@ public class RootController {
       return "demoTest4";
    }
 
-   @GetMapping("/textRecognition")
-   public String textRec() {
-      return "textRec";
-   }
+   
 
    @RequestMapping("/DemoTypeSeg")
    public String seg(HttpServletRequest req, RedirectAttributes rttr) {
