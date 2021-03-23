@@ -80,7 +80,7 @@ public class RootController {
             HttpSession session = req.getSession(true);
             session.setAttribute("menu_func", Integer.toString(adminVO.getMenu_func()));
             session.setAttribute("user_idx", Integer.toString(adminVO.getIdx()));
-            session.setMaxInactiveInterval(60);
+            session.setMaxInactiveInterval(3600);
 
             String page = (String) session.getAttribute("menu_func");
 

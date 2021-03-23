@@ -16,6 +16,8 @@ $(document).ready(function(){
     var $panelContents = $(".popup_contents");
     var $loading = $("#loading");
 
+    let version = 'AI Version: ';
+
     let obj = {
         filename: [],
         image: [],
@@ -73,6 +75,7 @@ $(document).ready(function(){
             if(index >= files.length){
                 $("#btnup").css("display", "none");
                 $("#useage").css("display", "none");
+                $("#version").css("display", "none");
                 $("#refresh").css("display","inline-block");
                 $("#refresh").click(() => {
                     $("#select").prop("value","");
@@ -88,6 +91,7 @@ $(document).ready(function(){
                     $("#refresh").css("display", "none");
                     $("#btnup").css("display", "inline-block");
                     $("#useage").css("display", "block");
+                    $("#version").css("display", "block");
             
                     obj = {
                         filename: [],
@@ -106,20 +110,28 @@ $(document).ready(function(){
                     dataType: 'json',
                     processData: false,
                     contentType: false,
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Authorization","Bearer " + localStorage.getItem("token"));
+                    },            
                     error: function(xhr, status, error){
                         $loading.hide();
-                        console.log(error);
-                        alert("에러가 발생했습니다..");
+                        console.log(xhr);
+                        alert("에러가 발생했습니다.");
+                        location.href="/";
+
                     },
                     success: function(json){
+                        console.log(json);
                         $loading.fadeOut("slow");
                         $("#jsonStr").css("display", "block");
+                        version += json.ai_version+'\n';
                         for(var i = 0; i < json.no_result; i ++){
                             bgJsonData.img_name.push(obj.filename[i]);
                             bgJsonData.no_result = json.no_result;
                             bgJsonData.results.push(json.results[i]);
                         }
-                        jsonStr.innerHTML = JSON.stringify(bgJsonData, null, '\t'); 
+                        jsonStr.innerHTML = version;
+                        jsonStr.innerHTML += JSON.stringify(bgJsonData, null, '\t'); 
                     }
                 })
                 return;
@@ -150,13 +162,13 @@ $(document).ready(function(){
                     bg.setAttribute('class', 'mouseout');
                 })
                 bg.addEventListener("click", function(e) {
-                    imgIdx = Number(bg.id);
+                    let imgIdx = Number(bg.id);
                     if (bg.data == "null") 
                     {
                         alert("최소사이즈 미만 오류 (가로: 512px  X  세로: 512px)");
                         return;
                     }
-                    $loading.show();
+                    //$loading.show();
                     clearNodes(resultImg);
 
                     var jsonData = "{ " + "\"filename\": [ \"" + obj.filename[imgIdx] + "\"]";
@@ -190,143 +202,125 @@ $(document).ready(function(){
                     popupImg.style.borderRadius = "5px";
                     popupImg.style.margin = "0px";
                     
-                    $.ajax({
-                        type: 'post',
-                        url: "/predict-v2",
-                        data : jsonData,
-                        dataType: 'json',
-                        processData: false,
-                        contentType: false,
-                        error: function(xhr, status, error){
-                            $loading.hide();
-                            console.log(error);
-                            alert("에러가 발생했습니다..");
-                        },
-                        success: function(json){
-                            $panel.fadeIn();
-                            $loading.fadeOut("slow");
+                    sqRed.style.position = "absolute";
+                    sqRed.style.backgroundColor = "red";
+                    sqRed.style.left = "-50px";
+                    sqRed.style.width = "15px";
+                    sqRed.style.height = "15px";
+                    sqPlum.style.position = "absolute";
+                    sqPlum.style.left = "40px";
+                    sqPlum.style.backgroundColor = "plum";
+                    sqPlum.style.width = "15px";
+                    sqPlum.style.height = "15px";
+                    sqYg.style.position = "absolute";
+                    sqYg.style.left = "110px";
+                    sqYg.style.backgroundColor = "yellowGreen";
+                    sqYg.style.width = "15px";
+                    sqYg.style.height = "15px";
+
+                    typeRed.style.position = "absolute";
+                    typeRed.style.color = "red";
+                    typeRed.innerHTML = "scratch";
+                    typeRed.style.top = "-3px";
+                    typeRed.style.left = "-30px";
+                    typePlum.style.position = "absolute";
+                    typePlum.style.top = "-3px";
+                    typePlum.style.left = "60px";
+                    typePlum.style.color = "plum";
+                    typePlum.innerHTML = "dent";
+                    typeYg.style.position = "absolute";
+                    typeYg.style.top = "-3px";
+                    typeYg.style.left = "130px";
+                    typeYg.style.color = "yellowGreen";
+                    typeYg.innerHTML = "crack";
+
+                    typeDiv.style.position = "relative";
+                    typeDiv.style.paddingTop = "3px";
+                    typeDiv.style.top = "100%";
+                    typeDiv.style.left = "315px";
+                    typeDiv.append(sqRed);
+                    typeDiv.append(sqPlum);
+                    typeDiv.append(sqYg);
+                    typeDiv.append(typeRed);
+                    typeDiv.append(typePlum);
+                    typeDiv.append(typeYg);
+
+                    popupImg.appendChild(typeDiv);
+                    console.log(bgJsonData.results[imgIdx]);
+                    if(bgJsonData.results[imgIdx] !== undefined){
+                        const type = bgJsonData.results[imgIdx].boxs;
+                        for(var i = 0; i < type.length; i++){
+                            let rect = document.createElement("span");
+                            let box = bgJsonData.results[imgIdx].boxs[i];
+                            const confi = document.createElement("p");
+                            confi.id = "confi_" + i;
+                            console.log(box[5]);
                             
-                            sqRed.style.position = "absolute";
-                            sqRed.style.backgroundColor = "red";
-                            sqRed.style.left = "-50px";
-                            sqRed.style.width = "15px";
-                            sqRed.style.height = "15px";
-                            sqPlum.style.position = "absolute";
-                            sqPlum.style.left = "40px";
-                            sqPlum.style.backgroundColor = "plum";
-                            sqPlum.style.width = "15px";
-                            sqPlum.style.height = "15px";
-                            sqYg.style.position = "absolute";
-                            sqYg.style.left = "110px";
-                            sqYg.style.backgroundColor = "yellowGreen";
-                            sqYg.style.width = "15px";
-                            sqYg.style.height = "15px";
-
-                            typeRed.style.position = "absolute";
-                            typeRed.style.color = "red";
-                            typeRed.innerHTML = "scratch";
-                            typeRed.style.top = "-3px";
-                            typeRed.style.left = "-30px";
-                            typePlum.style.position = "absolute";
-                            typePlum.style.top = "-3px";
-                            typePlum.style.left = "60px";
-                            typePlum.style.color = "plum";
-                            typePlum.innerHTML = "dent";
-                            typeYg.style.position = "absolute";
-                            typeYg.style.top = "-3px";
-                            typeYg.style.left = "130px";
-                            typeYg.style.color = "yellowGreen";
-                            typeYg.innerHTML = "crack";
-
-                            typeDiv.style.position = "relative";
-                            typeDiv.style.paddingTop = "3px";
-                            typeDiv.style.top = "100%";
-                            typeDiv.style.left = "315px";
-                            typeDiv.append(sqRed);
-                            typeDiv.append(sqPlum);
-                            typeDiv.append(sqYg);
-                            typeDiv.append(typeRed);
-                            typeDiv.append(typePlum);
-                            typeDiv.append(typeYg);
-
-                            popupImg.appendChild(typeDiv);
-                            console.log(json.results[0]);
-
-                            if(json.results[0] !== undefined){
-                                const type = json.results[0].boxs;
-                                for(var i = 0; i < type.length; i++){
-                                    let rect = document.createElement("span");
-                                    let box = json.results[0].boxs[i];
-                                    const confi = document.createElement("p");
-                                    confi.id = "confi_" + i;
-                                    console.log(box[5]);
-                                    
-                                    rect.className = "rect"
-                                    rect.id = "rect_" + i;
-                                    rect.style.position = "absolute";
-                                    rect.style.left = `${(500/imgW[imgIdx])*box[0]}px`;
-                                    rect.style.top = `${(312/imgH[imgIdx])*box[1]}px`;
-                                    rect.style.paddingRight = `${(box[2]-box[0])*(500/imgW[imgIdx])}px`;
-                                    rect.style.paddingBottom = `${(box[3]-box[1])*(312/imgH[imgIdx])}px`;
-                                    switch(type[i][4]) {
-                                        case "scratch":
-                                            rect.style.border = "solid red 2px";
-                                            break;
-                                        case "dent":
-                                            rect.style.border = "solid plum 2px";
-                                            break;
-                                        case "crack":
-                                            rect.style.border = "solid yellowgreen 2px";
-                                            break;
-                                    }
-                                    rect.addEventListener("mouseover", function() {
-                                        confi.setAttribute('class','hoverConfi');
-                                        rect.style.zIndex = 2;
-                                        confi.style.zIndex = 2;
-                                        for (var j = 0; j < type.length; j++) {
-                                            var rect_id = "rect_" + j;
-                                            var confi_id = "confi_" + j;
-                                            if (rect_id == rect.id) {
-                                                continue;
-                                            }
-                                            if (confi_id == confi.id) {
-                                                continue;
-                                            }
-                                            $("#" + rect_id).hide();
-                                            $("#" + confi_id).hide();
-                                        }
-                                    });
-                                    rect.addEventListener("mouseout", function() {
-                                        confi.setAttribute('class', 'mouseoutConfi');
-                                        rect.style.zIndex = 1;
-                                        confi.style.zIndex = 1;
-                                        for (var j = 0; j < type.length; j++) {
-                                            var rect_id = "rect_" + j;
-                                            var confi_id = "confi_" + j;
-                                            if (rect_id == rect.id) {
-                                                continue;
-                                            }
-                                            if (confi_id == confi.id) {
-                                                continue;
-                                            }
-                                            $("#" + rect_id).show();
-                                            $("#" + confi_id).show();
-                                        }
-                                    })
-                                    var confidensce = parseFloat(box[5]*100).toFixed(2)
-                                    confi.innerHTML = confidensce + "%";
-                                    confi.style.position = "absolute";
-                                    confi.style.fontSize = "10px";
-                                    confi.style.top = `${((312/imgH[imgIdx])*box[1])-20}px`;
-                                    confi.style.left = `${((500/imgW[imgIdx])*box[0])-10}px`;
-    
-                                    popupImg.appendChild(confi);
-                                    popupImg.appendChild(rect);
-                                }
+                            rect.className = "rect"
+                            rect.id = "rect_" + i;
+                            rect.style.position = "absolute";
+                            rect.style.left = `${(500/imgW[imgIdx])*box[0]}px`;
+                            rect.style.top = `${(312/imgH[imgIdx])*box[1]}px`;
+                            rect.style.paddingRight = `${(box[2]-box[0])*(500/imgW[imgIdx])}px`;
+                            rect.style.paddingBottom = `${(box[3]-box[1])*(312/imgH[imgIdx])}px`;
+                            switch(type[i][4]) {
+                                case "scratch":
+                                    rect.style.border = "solid red 2px";
+                                    break;
+                                case "dent":
+                                    rect.style.border = "solid plum 2px";
+                                    break;
+                                case "crack":
+                                    rect.style.border = "solid yellowgreen 2px";
+                                    break;
                             }
-                            resultImg.appendChild(popupImg);
+                            rect.addEventListener("mouseover", function() {
+                                confi.setAttribute('class','hoverConfi');
+                                rect.style.zIndex = 2;
+                                confi.style.zIndex = 2;
+                                for (var j = 0; j < type.length; j++) {
+                                    var rect_id = "rect_" + j;
+                                    var confi_id = "confi_" + j;
+                                    if (rect_id == rect.id) {
+                                        continue;
+                                    }
+                                    if (confi_id == confi.id) {
+                                        continue;
+                                    }
+                                    $("#" + rect_id).hide();
+                                    $("#" + confi_id).hide();
+                                }
+                            });
+                            rect.addEventListener("mouseout", function() {
+                                confi.setAttribute('class', 'mouseoutConfi');
+                                rect.style.zIndex = 1;
+                                confi.style.zIndex = 1;
+                                for (var j = 0; j < type.length; j++) {
+                                    var rect_id = "rect_" + j;
+                                    var confi_id = "confi_" + j;
+                                    if (rect_id == rect.id) {
+                                        continue;
+                                    }
+                                    if (confi_id == confi.id) {
+                                        continue;
+                                    }
+                                    $("#" + rect_id).show();
+                                    $("#" + confi_id).show();
+                                }
+                            })
+                            var confidensce = parseFloat(box[5]*100).toFixed(2)
+                            confi.innerHTML = confidensce + "%";
+                            confi.style.position = "absolute";
+                            confi.style.fontSize = "10px";
+                            confi.style.top = `${((312/imgH[imgIdx])*box[1])-20}px`;
+                            confi.style.left = `${((500/imgW[imgIdx])*box[0])-10}px`;
+
+                            popupImg.appendChild(confi);
+                            popupImg.appendChild(rect);
                         }
-                    });
+                    }
+                    resultImg.appendChild(popupImg);
+                    $panel.fadeIn();
                 })
 
                 let temp = new Array();
@@ -338,7 +332,27 @@ $(document).ready(function(){
                         bg.style.opacity = 0.2;
                         bg.data = "null";
                     } else {
+                        // let imgWidth = this.width;
+                        // let imgHeight = this.height;
+                        // let per = 0;
+                        // if(this.width > 1024) {
+                        //     per = 1024 / this.width;
+                        //     imgWidth *= per;
+                        //     imgHeight *= per;
+                        // }
+                        // temp.push(imgWidth);
+                        // temp.push(imgHeight);
+                        // obj.filename.push(files[index].name);
+                        // obj.image.push(result.split(',')[1]);
+                        // obj.size_img.push(temp);
+                        // obj.no_img = obj.no_img + 1;
+                        // temp = [];
 
+                        // imgW.push(this.width);
+                        // imgH.push(this.height);
+
+                        // idx ++;
+                        
                         temp.push(this.width);
                         temp.push(this.height);
                         obj.filename.push(files[index].name);
@@ -360,6 +374,7 @@ $(document).ready(function(){
         readFile(0);
     })
 })
+
 
 
 /*

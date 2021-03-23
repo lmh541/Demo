@@ -124,41 +124,46 @@ public class APIController {
 
         HttpSession session = req.getSession(true);
         AdminVO adminVO = new AdminVO();
-        adminVO.setMenu_func(Integer.parseInt((String)session.getAttribute("menu_func")));
-        adminVO.setIdx(Integer.parseInt((String)session.getAttribute("user_idx")));
-        AdminVO resVO = adminService.selectMenu(adminVO);
-        System.out.println("menu_func: "+session.getAttribute("menu_func")+"\nuser_idx: "+session.getAttribute("user_idx")+"\nresVO.idx: "+resVO.getIdx());
-        if (resVO == null) {
-            res.setStatus(401);
-            return returnNode;
-        }
-        res.setStatus(200);
-        try {
-            post.setEntity(new StringEntity(json));
-            final HttpResponse response = client.execute(post);
-            // JSON 형태 반환값 처리
-            ObjectMapper mapper = new ObjectMapper();
-            returnNode = mapper.readTree(response.getEntity().getContent());
-        } catch (UnsupportedEncodingException e) {
-            res.setStatus(500);
-            e.printStackTrace();
-        } catch (ClientProtocolException e) {
-            res.setStatus(500);
-            e.printStackTrace();
-        } catch (IOException e) {
-            res.setStatus(500);
-            e.printStackTrace();
-        } finally {
-            // clear resources
-        }
+        
+        if(session.getAttribute("menu_func").equals(null)){
+            return null;
+        }else{
+            adminVO.setMenu_func(Integer.parseInt((String)session.getAttribute("menu_func")));
+            adminVO.setIdx(Integer.parseInt((String)session.getAttribute("user_idx")));
+            AdminVO resVO = adminService.selectMenu(adminVO);
+            System.out.println("menu_func: "+session.getAttribute("menu_func")+"\nuser_idx: "+session.getAttribute("user_idx")+"\nresVO.idx: "+resVO.getIdx());
+            if (resVO == null) {
+                res.setStatus(401);
+                return returnNode;
+            }
+            res.setStatus(200);
+            try {
+                post.setEntity(new StringEntity(json));
+                final HttpResponse response = client.execute(post);
+                // JSON 형태 반환값 처리
+                ObjectMapper mapper = new ObjectMapper();
+                returnNode = mapper.readTree(response.getEntity().getContent());
+            } catch (UnsupportedEncodingException e) {
+                res.setStatus(500);
+                e.printStackTrace();
+            } catch (ClientProtocolException e) {
+                res.setStatus(500);
+                e.printStackTrace();
+            } catch (IOException e) {
+                res.setStatus(500);
+                e.printStackTrace();
+            } finally {
+                // clear resources
+            }
 
-        ObjectMapper mapper = new ObjectMapper();
-        JsonNode node = mapper.readTree("{ \"request\" : " + json + ", \"response\" : " + returnNode.toString() + "}");
-        List<DetectionVO> listVO = detectionService.makeAiPhoto(resVO.getIdx(), node);
-        for (DetectionVO detectionVO : listVO) {
-            detectionService.insert(detectionVO);
-        }
-        return returnNode;
+            ObjectMapper mapper = new ObjectMapper();
+            JsonNode node = mapper.readTree("{ \"request\" : " + json + ", \"response\" : " + returnNode.toString() + "}");
+            List<DetectionVO> listVO = detectionService.makeAiPhoto(resVO.getIdx(), node);
+            for (DetectionVO detectionVO : listVO) {
+                detectionService.insert(detectionVO);
+            }
+            return returnNode;
+            }   
     }
 
     @PostMapping("/seg")
