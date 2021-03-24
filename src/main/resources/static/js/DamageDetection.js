@@ -1,4 +1,4 @@
-$(document).ready(function(){
+$(document).ready(function () {
     const thumbnailBody = document.getElementById("thumbnailBody");
     const thumbnailCon = document.getElementById("thumbnailCon");
     const resultImg = document.getElementById("resultImg");
@@ -26,7 +26,7 @@ $(document).ready(function(){
     };
 
     let bgJsonData = {
-        "img_name":[],
+        "img_name": [],
         "no_result": 0,
         "results": [],
     }
@@ -35,8 +35,8 @@ $(document).ready(function(){
     const imgH = new Array();
 
     function clearNodes(parentNode) {
-        if(parentNode.childNodes.length > 0)
-            while(parentNode.hasChildNodes()) parentNode.removeChild(parentNode.firstChild);
+        if (parentNode.childNodes.length > 0)
+            while (parentNode.hasChildNodes()) parentNode.removeChild(parentNode.firstChild);
     }
 
     $("#btn_popup_close").on("click", popupClose);
@@ -47,17 +47,17 @@ $(document).ready(function(){
         // 이벤트 기본 동작 중단
         e.preventDefault();
     }
-    
-    $("#select").change(function(e){
+
+    $("#select").change(function (e) {
         clearNodes(thumbnailCon);
         const files = e.target.files;
         let idx = 0;
 
-        if(files.length > 8) {
+        if (files.length > 8) {
             alert("업로드 가능한 사진 개수는 8개 까지 입니다.");
             return;
         }
-        
+
         thumbnailBody.style.display = "flex";
 
         obj = {
@@ -68,31 +68,31 @@ $(document).ready(function(){
         };
         imgW.splice(0, files.length);
         imgH.splice(0, files.length);
-        
+
         function readFile(index) {
             $loading.show();
             $("#subtitle").css("display", "block");
-            if(index >= files.length){
+            if (index >= files.length) {
                 $("#btnup").css("display", "none");
                 $("#useage").css("display", "none");
                 $("#version").css("display", "none");
-                $("#refresh").css("display","inline-block");
+                $("#refresh").css("display", "inline-block");
                 $("#refresh").click(() => {
-                    $("#select").prop("value","");
+                    $("#select").prop("value", "");
                     clearNodes(thumbnailCon);
                     bgJsonData = {
-                        "img_name":[],
+                        "img_name": [],
                         "no_result": 0,
                         "results": [],
                     }
                     $("#subtitle").css("display", "none");
-                    $("#thumbnailBody").css("display","none");
+                    $("#thumbnailBody").css("display", "none");
                     $("#jsonStr").css("display", "none");
                     $("#refresh").css("display", "none");
                     $("#btnup").css("display", "inline-block");
                     $("#useage").css("display", "block");
                     $("#version").css("display", "block");
-            
+
                     obj = {
                         filename: [],
                         image: [],
@@ -105,48 +105,48 @@ $(document).ready(function(){
 
                 $.ajax({
                     type: 'post',
-                    url: "/predict-v2",
-                    data : JSON.stringify(obj),
+                    url: "http://divus.iptime.org:4201/peoplecar/predict-v2",
+                    data: JSON.stringify(obj),
                     dataType: 'json',
                     processData: false,
                     contentType: false,
                     beforeSend: function (xhr) {
-                        xhr.setRequestHeader("Authorization","Bearer " + localStorage.getItem("token"));
-                    },            
-                    error: function(xhr, status, error){
+                        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
+                    },
+                    error: function (xhr, status, error) {
                         $loading.hide();
                         console.log(xhr);
                         alert("에러가 발생했습니다.");
-                        location.href="/";
+                        location.href = "/";
 
                     },
-                    success: function(json){
+                    success: function (json) {
                         console.log(json);
                         $loading.fadeOut("slow");
                         $("#jsonStr").css("display", "block");
-                        version += json.ai_version+'\n';
-                        for(var i = 0; i < json.no_result; i ++){
+                        version += json.ai_version + '\n';
+                        for (var i = 0; i < json.no_result; i++) {
                             bgJsonData.img_name.push(obj.filename[i]);
                             bgJsonData.no_result = json.no_result;
                             bgJsonData.results.push(json.results[i]);
                         }
                         jsonStr.innerHTML = version;
-                        jsonStr.innerHTML += JSON.stringify(bgJsonData, null, '\t'); 
+                        jsonStr.innerHTML += JSON.stringify(bgJsonData, null, '\t');
                     }
                 })
                 return;
-            } 
-            
+            }
+
             const fr = new FileReader();
             fr.readAsDataURL(files[index]);
-            fr.onload = function(e) {
+            fr.onload = function (e) {
                 const result = e.target.result;
                 const bg = document.createElement("div");
 
                 bg.id = idx;
                 bg.style.float = "left";
                 bg.style.position = "relative";
-                bg.style.background = "url(\'"+result+"\')";
+                bg.style.background = "url(\'" + result + "\')";
                 bg.style.backgroundRepeat = "no-repeat";
                 bg.style.backgroundSize = "cover";
                 bg.style.width = `${100}px`;
@@ -155,16 +155,15 @@ $(document).ready(function(){
                 bg.style.marginTop = "10px";
                 bg.style.marginLeft = "10px";
                 bg.style.marginBottom = "10px";
-                bg.addEventListener("mouseover", function() {
-                    bg.setAttribute('class','hover');
+                bg.addEventListener("mouseover", function () {
+                    bg.setAttribute('class', 'hover');
                 });
-                bg.addEventListener("mouseout", function() {
+                bg.addEventListener("mouseout", function () {
                     bg.setAttribute('class', 'mouseout');
                 })
-                bg.addEventListener("click", function(e) {
+                bg.addEventListener("click", function (e) {
                     let imgIdx = Number(bg.id);
-                    if (bg.data == "null") 
-                    {
+                    if (bg.data == "null") {
                         alert("최소사이즈 미만 오류 (가로: 512px  X  세로: 512px)");
                         return;
                     }
@@ -176,7 +175,7 @@ $(document).ready(function(){
                     jsonData += ",\"size_img\" : [ [" + imgW[imgIdx] + "," + imgH[imgIdx] + "] ]";
                     jsonData += ",\"no_img\" : 1";
                     jsonData += "}";
-                    
+
                     // 팝업 가운데 설정(가로)
                     if ($panelContents.outerWidth() < $(document).width()) {
                         $panelContents.css("margin-left", "-" + $panelContents.outerWidth() / 2 + "px");
@@ -194,14 +193,14 @@ $(document).ready(function(){
                     clearNodes(popupImg);
                     popupImg.id = imgIdx;
                     popupImg.style.position = "relative";
-                    popupImg.style.background = "url(\'"+result+"\')";
+                    popupImg.style.background = "url(\'" + result + "\')";
                     popupImg.style.backgroundRepeat = "no-repeat";
                     popupImg.style.backgroundSize = "100% 100%";
                     popupImg.style.width = `${500}px`;
                     popupImg.style.height = `${312}px`;
                     popupImg.style.borderRadius = "5px";
                     popupImg.style.margin = "0px";
-                    
+
                     sqRed.style.position = "absolute";
                     sqRed.style.backgroundColor = "red";
                     sqRed.style.left = "-50px";
@@ -247,23 +246,23 @@ $(document).ready(function(){
 
                     popupImg.appendChild(typeDiv);
                     console.log(bgJsonData.results[imgIdx]);
-                    if(bgJsonData.results[imgIdx] !== undefined){
+                    if (bgJsonData.results[imgIdx] !== undefined) {
                         const type = bgJsonData.results[imgIdx].boxs;
-                        for(var i = 0; i < type.length; i++){
+                        for (var i = 0; i < type.length; i++) {
                             let rect = document.createElement("span");
                             let box = bgJsonData.results[imgIdx].boxs[i];
                             const confi = document.createElement("p");
                             confi.id = "confi_" + i;
                             console.log(box[5]);
-                            
+
                             rect.className = "rect"
                             rect.id = "rect_" + i;
                             rect.style.position = "absolute";
-                            rect.style.left = `${(500/imgW[imgIdx])*box[0]}px`;
-                            rect.style.top = `${(312/imgH[imgIdx])*box[1]}px`;
-                            rect.style.paddingRight = `${(box[2]-box[0])*(500/imgW[imgIdx])}px`;
-                            rect.style.paddingBottom = `${(box[3]-box[1])*(312/imgH[imgIdx])}px`;
-                            switch(type[i][4]) {
+                            rect.style.left = `${(500 / imgW[imgIdx]) * box[0]}px`;
+                            rect.style.top = `${(312 / imgH[imgIdx]) * box[1]}px`;
+                            rect.style.paddingRight = `${(box[2] - box[0]) * (500 / imgW[imgIdx])}px`;
+                            rect.style.paddingBottom = `${(box[3] - box[1]) * (312 / imgH[imgIdx])}px`;
+                            switch (type[i][4]) {
                                 case "scratch":
                                     rect.style.border = "solid red 2px";
                                     break;
@@ -274,8 +273,8 @@ $(document).ready(function(){
                                     rect.style.border = "solid yellowgreen 2px";
                                     break;
                             }
-                            rect.addEventListener("mouseover", function() {
-                                confi.setAttribute('class','hoverConfi');
+                            rect.addEventListener("mouseover", function () {
+                                confi.setAttribute('class', 'hoverConfi');
                                 rect.style.zIndex = 2;
                                 confi.style.zIndex = 2;
                                 for (var j = 0; j < type.length; j++) {
@@ -291,7 +290,7 @@ $(document).ready(function(){
                                     $("#" + confi_id).hide();
                                 }
                             });
-                            rect.addEventListener("mouseout", function() {
+                            rect.addEventListener("mouseout", function () {
                                 confi.setAttribute('class', 'mouseoutConfi');
                                 rect.style.zIndex = 1;
                                 confi.style.zIndex = 1;
@@ -308,12 +307,12 @@ $(document).ready(function(){
                                     $("#" + confi_id).show();
                                 }
                             })
-                            var confidensce = parseFloat(box[5]*100).toFixed(2)
+                            var confidensce = parseFloat(box[5] * 100).toFixed(2)
                             confi.innerHTML = confidensce + "%";
                             confi.style.position = "absolute";
                             confi.style.fontSize = "10px";
-                            confi.style.top = `${((312/imgH[imgIdx])*box[1])-20}px`;
-                            confi.style.left = `${((500/imgW[imgIdx])*box[0])-10}px`;
+                            confi.style.top = `${((312 / imgH[imgIdx]) * box[1]) - 20}px`;
+                            confi.style.left = `${((500 / imgW[imgIdx]) * box[0]) - 10}px`;
 
                             popupImg.appendChild(confi);
                             popupImg.appendChild(rect);
@@ -325,9 +324,9 @@ $(document).ready(function(){
 
                 let temp = new Array();
                 let img = new Image();
-                
+
                 img.src = result;
-                img.onload = function() {
+                img.onload = function () {
                     if (this.width < 512 && this.height < 512) {
                         bg.style.opacity = 0.2;
                         bg.data = "null";
@@ -352,7 +351,7 @@ $(document).ready(function(){
                         // imgH.push(this.height);
 
                         // idx ++;
-                        
+
                         temp.push(this.width);
                         temp.push(this.height);
                         obj.filename.push(files[index].name);
@@ -364,11 +363,11 @@ $(document).ready(function(){
                         imgW.push(this.width);
                         imgH.push(this.height);
 
-                        idx ++;
+                        idx++;
                     }
-                    readFile(index+1);
+                    readFile(index + 1);
                 }
-                thumbnailCon.appendChild(bg);   
+                thumbnailCon.appendChild(bg);
             }
         }
         readFile(0);
@@ -393,11 +392,11 @@ function otherRectControl(total, id, show) {
 
         if (show === true) {
             $("#" + rect_id).show();
-            $("#" + confi_id).show();    
+            $("#" + confi_id).show();
         } else {
             $("#" + rect_id).hide();
-            $("#" + confi_id).hide();    
+            $("#" + confi_id).hide();
         }
     }
 }
-*/ 
+*/
