@@ -97,11 +97,6 @@ $(document).ready(function () {
           url: "http://divus.iptime.org:4207/vin/ai-api/ver-0.1.10",
           data: JSON.stringify(obj),
           dataType: 'json',
-          processData: false,
-          contentType: false,
-          beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
-          },
           error: function (xhr, status, error) {
             $loading.hide();
             console.log(xhr);
@@ -177,6 +172,7 @@ $(document).ready(function () {
           clearNodes(popupImg);
 
           $(typeTxt).css({
+            fontFamily: "consolas",
             position: "absolute",
             bottom: "-3px",
             right: "3px",
@@ -220,7 +216,8 @@ $(document).ready(function () {
 
               let polygon = bgJsonData.results[imgIdx].polygon;
 
-              ctx.strokeStyle = "red";
+              ctx.strokeStyle = "rgba(255,0,0,0.2)";
+              ctx.lineWidth = 17;
               ctx.beginPath();
 
               for (let i = 0; i < polygon.length - 1; i++) {
@@ -228,8 +225,12 @@ $(document).ready(function () {
                 ctx.lineTo((500 / imgW[imgIdx]) * polygon[i + 1][0], (312 / imgH[imgIdx]) * polygon[i][1]);
               }
 
+              ctx.moveTo((500 / imgW[imgIdx]) * polygon[0][0], (312 / imgH[imgIdx]) * polygon[0][1]);
+              ctx.lineTo((500 / imgW[imgIdx]) * polygon[polygon.length - 1][0], (312 / imgH[imgIdx]) * polygon[polygon.length - 1][1]);
+
               ctx.closePath();
               ctx.stroke();
+
             }
           }
 

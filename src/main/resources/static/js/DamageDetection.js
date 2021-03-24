@@ -108,11 +108,6 @@ $(document).ready(function () {
                     url: "http://divus.iptime.org:4201/peoplecar/predict-v2",
                     data: JSON.stringify(obj),
                     dataType: 'json',
-                    processData: false,
-                    contentType: false,
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
-                    },
                     error: function (xhr, status, error) {
                         $loading.hide();
                         console.log(xhr);

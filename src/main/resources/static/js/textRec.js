@@ -97,14 +97,8 @@ $(document).ready(function () {
                     url: "http://divus.iptime.org:4205/jeilsteel/ai-api/ver-0.1.10",
                     data: JSON.stringify(obj),
                     dataType: 'json',
-                    processData: false,
-                    contentType: false,
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
-                    },
                     error: function (xhr, status, error) {
                         $loading.hide();
-                        console.log(xhr);
                         alert("에러가 발생했습니다..");
                     },
                     success: function (json) {
@@ -177,6 +171,7 @@ $(document).ready(function () {
                     clearNodes(popupImg);
 
                     $(typeTxt).css({
+                        fontFamily: "consolas",
                         position: "absolute",
                         bottom: "-3px",
                         right: "3px",

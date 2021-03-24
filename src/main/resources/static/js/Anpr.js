@@ -94,17 +94,11 @@ $(document).ready(function () {
 
         $.ajax({
           type: 'post',
-          url: "http://divus.iptime.org:4207/vin/ai-api/ver-0.1.10",
+          url: "http://divus.iptime.org:4209/anpr/ai-api/ver-0.1.10",
           data: JSON.stringify(obj),
           dataType: 'json',
-          processData: false,
-          contentType: false,
-          beforeSend: function (xhr) {
-            xhr.setRequestHeader("Authorization", "Bearer " + localStorage.getItem("token"));
-          },
           error: function (xhr, status, error) {
             $loading.hide();
-            console.log(xhr);
             alert("에러가 발생했습니다..");
           },
           success: function (json) {
@@ -177,11 +171,13 @@ $(document).ready(function () {
           clearNodes(popupImg);
 
           $(typeTxt).css({
+            fontFamily: "consolas",
             position: "absolute",
             bottom: "-3px",
             right: "3px",
             margin: 0,
-            color: "red"
+            color: "red",
+            fontSize: "13px"
           })
 
           $(popupImg).css({
@@ -196,37 +192,49 @@ $(document).ready(function () {
             popupImg.height = 312;
             ctx.drawImage(imgObj, 0, 0, 500, 312);
             if (bgJsonData.results[imgIdx] !== undefined) {
-              let box = bgJsonData.results[imgIdx].boxs[0];
-              typeTxt.innerHTML = `${box[1]} / ${parseFloat(box[2] * 100).toFixed(2) + '%'}`;
+              let predict_result = bgJsonData.results[imgIdx].predict_result;
+              typeTxt.innerHTML = "<b>CHAR</b>: ";
+              // char: ${predict_result + pred_char_class} ${parseFloat(predict_result.minimum_pred_char_conf * 100).toFixed(2) + '%'}
+              // `;
 
-              // ctx.strokeStyle = "red";
+              for (let i = 0; i < predict_result.pred_char_class.length; i++)
+                typeTxt.innerHTML += `'${predict_result.pred_char_class[i]}' `;
+              typeTxt.innerHTML += ` / ${parseFloat(predict_result.minimum_pred_char_conf * 100).toFixed(2) + '%'}  &  `;
+              typeTxt.innerHTML += `<b>NP</b>: '${predict_result.pred_text}' / ${parseFloat(predict_result.pred_np_conf * 100).toFixed(2) + '%'}`
 
-              // ctx.beginPath();
-
-              // ctx.moveTo((500 / imgW[imgIdx]) * box[0][0][0], (312 / imgH[imgIdx]) * box[0][0][1]);
-              // ctx.lineTo((500 / imgW[imgIdx]) * box[0][0][2], (312 / imgH[imgIdx]) * box[0][0][1]);
-
-              // ctx.moveTo((500 / imgW[imgIdx]) * box[0][0][2], (312 / imgH[imgIdx]) * box[0][0][1]);
-              // ctx.lineTo((500 / imgW[imgIdx]) * box[0][0][2], (312 / imgH[imgIdx]) * box[0][0][3]);
-
-              // ctx.moveTo((500 / imgW[imgIdx]) * box[0][0][0], (312 / imgH[imgIdx]) * box[0][0][3]);
-              // ctx.lineTo((500 / imgW[imgIdx]) * box[0][0][2], (312 / imgH[imgIdx]) * box[0][0][3]);
-
-              // ctx.moveTo((500 / imgW[imgIdx]) * box[0][0][0], (312 / imgH[imgIdx]) * box[0][0][1]);
-              // ctx.lineTo((500 / imgW[imgIdx]) * box[0][0][0], (312 / imgH[imgIdx]) * box[0][0][3]);
-
-              // ctx.closePath();
-              // ctx.stroke();
-
-              let polygon = bgJsonData.results[imgIdx].polygon;
+              let char_box = predict_result.pred_char_boxes;
+              let np_box = predict_result.pred_np_box;
 
               ctx.strokeStyle = "red";
               ctx.beginPath();
 
-              for (let i = 0; i < polygon.length - 1; i++) {
-                ctx.moveTo((500 / imgW[imgIdx]) * polygon[i][0], (312 / imgH[imgIdx]) * polygon[i][1]);
-                ctx.lineTo((500 / imgW[imgIdx]) * polygon[i + 1][0], (312 / imgH[imgIdx]) * polygon[i][1]);
+              for (let i = 0; i < char_box.length; i++) {
+                ctx.moveTo((500 / imgW[imgIdx]) * char_box[i][0], (312 / imgH[imgIdx]) * char_box[i][1]);
+                ctx.lineTo((500 / imgW[imgIdx]) * char_box[i][2], (312 / imgH[imgIdx]) * char_box[i][1]);
+
+                ctx.moveTo((500 / imgW[imgIdx]) * char_box[i][2], (312 / imgH[imgIdx]) * char_box[i][1]);
+                ctx.lineTo((500 / imgW[imgIdx]) * char_box[i][2], (312 / imgH[imgIdx]) * char_box[i][3]);
+
+                ctx.moveTo((500 / imgW[imgIdx]) * char_box[i][0], (312 / imgH[imgIdx]) * char_box[i][3]);
+                ctx.lineTo((500 / imgW[imgIdx]) * char_box[i][2], (312 / imgH[imgIdx]) * char_box[i][3]);
+
+                ctx.moveTo((500 / imgW[imgIdx]) * char_box[i][0], (312 / imgH[imgIdx]) * char_box[i][1]);
+                ctx.lineTo((500 / imgW[imgIdx]) * char_box[i][0], (312 / imgH[imgIdx]) * char_box[i][3]);
               }
+
+
+              ctx.moveTo((500 / imgW[imgIdx]) * np_box[0], (312 / imgH[imgIdx]) * np_box[1]);
+              ctx.lineTo((500 / imgW[imgIdx]) * np_box[2], (312 / imgH[imgIdx]) * np_box[1]);
+
+              ctx.moveTo((500 / imgW[imgIdx]) * np_box[2], (312 / imgH[imgIdx]) * np_box[1]);
+              ctx.lineTo((500 / imgW[imgIdx]) * np_box[2], (312 / imgH[imgIdx]) * np_box[3]);
+
+              ctx.moveTo((500 / imgW[imgIdx]) * np_box[0], (312 / imgH[imgIdx]) * np_box[3]);
+              ctx.lineTo((500 / imgW[imgIdx]) * np_box[2], (312 / imgH[imgIdx]) * np_box[3]);
+
+              ctx.moveTo((500 / imgW[imgIdx]) * np_box[0], (312 / imgH[imgIdx]) * np_box[1]);
+              ctx.lineTo((500 / imgW[imgIdx]) * np_box[0], (312 / imgH[imgIdx]) * np_box[3]);
+
 
               ctx.closePath();
               ctx.stroke();
