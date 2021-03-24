@@ -197,25 +197,36 @@ $(document).ready(function () {
             ctx.drawImage(imgObj, 0, 0, 500, 312);
             if (bgJsonData.results[imgIdx] !== undefined) {
               let box = bgJsonData.results[imgIdx].boxs[0];
-              console.log(box);
-              var j = 0;
               typeTxt.innerHTML = `${box[1]} / ${parseFloat(box[2] * 100).toFixed(2) + '%'}`;
 
-              ctx.strokeStyle = "red";
+              // ctx.strokeStyle = "red";
 
+              // ctx.beginPath();
+
+              // ctx.moveTo((500 / imgW[imgIdx]) * box[0][0][0], (312 / imgH[imgIdx]) * box[0][0][1]);
+              // ctx.lineTo((500 / imgW[imgIdx]) * box[0][0][2], (312 / imgH[imgIdx]) * box[0][0][1]);
+
+              // ctx.moveTo((500 / imgW[imgIdx]) * box[0][0][2], (312 / imgH[imgIdx]) * box[0][0][1]);
+              // ctx.lineTo((500 / imgW[imgIdx]) * box[0][0][2], (312 / imgH[imgIdx]) * box[0][0][3]);
+
+              // ctx.moveTo((500 / imgW[imgIdx]) * box[0][0][0], (312 / imgH[imgIdx]) * box[0][0][3]);
+              // ctx.lineTo((500 / imgW[imgIdx]) * box[0][0][2], (312 / imgH[imgIdx]) * box[0][0][3]);
+
+              // ctx.moveTo((500 / imgW[imgIdx]) * box[0][0][0], (312 / imgH[imgIdx]) * box[0][0][1]);
+              // ctx.lineTo((500 / imgW[imgIdx]) * box[0][0][0], (312 / imgH[imgIdx]) * box[0][0][3]);
+
+              // ctx.closePath();
+              // ctx.stroke();
+
+              let polygon = bgJsonData.results[imgIdx].polygon;
+
+              ctx.strokeStyle = "red";
               ctx.beginPath();
 
-              ctx.moveTo((500 / imgW[imgIdx]) * box[0][0][0], (312 / imgH[imgIdx]) * box[0][0][1]);
-              ctx.lineTo((500 / imgW[imgIdx]) * box[0][0][2], (312 / imgH[imgIdx]) * box[0][0][1]);
-
-              ctx.moveTo((500 / imgW[imgIdx]) * box[0][0][2], (312 / imgH[imgIdx]) * box[0][0][1]);
-              ctx.lineTo((500 / imgW[imgIdx]) * box[0][0][2], (312 / imgH[imgIdx]) * box[0][0][3]);
-
-              ctx.moveTo((500 / imgW[imgIdx]) * box[0][0][0], (312 / imgH[imgIdx]) * box[0][0][3]);
-              ctx.lineTo((500 / imgW[imgIdx]) * box[0][0][2], (312 / imgH[imgIdx]) * box[0][0][3]);
-
-              ctx.moveTo((500 / imgW[imgIdx]) * box[0][0][0], (312 / imgH[imgIdx]) * box[0][0][1]);
-              ctx.lineTo((500 / imgW[imgIdx]) * box[0][0][0], (312 / imgH[imgIdx]) * box[0][0][3]);
+              for (let i = 0; i < polygon.length - 1; i++) {
+                ctx.moveTo((500 / imgW[imgIdx]) * polygon[i][0], (312 / imgH[imgIdx]) * polygon[i][1]);
+                ctx.lineTo((500 / imgW[imgIdx]) * polygon[i + 1][0], (312 / imgH[imgIdx]) * polygon[i][1]);
+              }
 
               ctx.closePath();
               ctx.stroke();

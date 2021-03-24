@@ -61,7 +61,6 @@ public class RootController {
    public String loginPage() {
       return "/login";
    }
-   
 
    @RequestMapping(value = "/doLogin", method = RequestMethod.POST)
    public @ResponseBody String login(HttpServletResponse res, HttpServletRequest req,
@@ -84,22 +83,22 @@ public class RootController {
 
             if (session.getAttribute("page") == null) {
                return "/";
-            } else if(session.getAttribute("page").equals("DamageDetection")){
+            } else if (session.getAttribute("page").equals("DamageDetection")) {
                return "/DamageDetection";
-            } else if(session.getAttribute("page").equals("textRecognition")){
+            } else if (session.getAttribute("page").equals("textRecognition")) {
                return "/textRecognition";
-            } else if(session.getAttribute("page").equals("vin")){
+            } else if (session.getAttribute("page").equals("vin")) {
                return "/vin";
-            } else if(session.getAttribute("page").equals("Evaluation")){
+            } else if (session.getAttribute("page").equals("Evaluation")) {
                return "/Evaluation";
-            } else if(session.getAttribute("page").equals("CarSegment")){
+            } else if (session.getAttribute("page").equals("CarSegment")) {
                return "/CarSegment";
-            } else if(session.getAttribute("page").equals("CarPartSegment")){
+            } else if (session.getAttribute("page").equals("CarPartSegment")) {
                return "/CarPartSegment";
             } else {
-               return "/ANPR";
+               return "/anpr";
             }
-         }else {
+         } else {
             return "login";
          }
       } catch (NullPointerException e) {
@@ -119,9 +118,9 @@ public class RootController {
       String text = "DamageDetection";
       int session = user_session(req, rttr, text);
 
-      if(session == -1){
+      if (session == -1) {
          return "login";
-      }else{
+      } else {
          return "DamageDetection";
       }
    }
@@ -131,9 +130,9 @@ public class RootController {
       String text = "textRecognition";
       int session = user_session(req, rttr, text);
 
-      if(session == -1){
+      if (session == -1) {
          return "login";
-      }else{
+      } else {
          return "textRec";
       }
    }
@@ -143,9 +142,9 @@ public class RootController {
       String text = "vin";
       int session = user_session(req, rttr, text);
 
-      if(session == -1){
+      if (session == -1) {
          return "login";
-      }else{
+      } else {
          return "vin";
       }
    }
@@ -155,9 +154,9 @@ public class RootController {
       String text = "Evaluation";
       int session = user_session(req, rttr, text);
 
-      if(session == -1){
+      if (session == -1) {
          return "login";
-      }else{
+      } else {
          return "Evaluation";
       }
    }
@@ -167,9 +166,9 @@ public class RootController {
       String text = "CarSegment";
       int session = user_session(req, rttr, text);
 
-      if(session == -1){
+      if (session == -1) {
          return "login";
-      }else{
+      } else {
          return "CarSegment";
       }
    }
@@ -179,22 +178,22 @@ public class RootController {
       String text = "CarPartSegment";
       int session = user_session(req, rttr, text);
 
-      if(session == -1){
+      if (session == -1) {
          return "login";
-      }else{
+      } else {
          return "CarPartSegment";
       }
    }
 
-   @RequestMapping("/ANPR")
+   @RequestMapping("/anpr")
    public String anpr(HttpServletRequest req, RedirectAttributes rttr) {
-      String text = "ANPR";
+      String text = "anpr";
       int session = user_session(req, rttr, text);
 
-      if(session == -1){
+      if (session == -1) {
          return "login";
-      }else{
-         return "ANPR";
+      } else {
+         return "anpr";
       }
    }
 
@@ -277,7 +276,7 @@ public class RootController {
    }
 
    // Session 유무 검사 : 존재하면 1, 존재하지 않으면 -1
-   private int user_session(HttpServletRequest req, RedirectAttributes rttr, String page){
+   private int user_session(HttpServletRequest req, RedirectAttributes rttr, String page) {
       HttpSession session = req.getSession();
 
       if (checkSession((String) session.getAttribute("user_idx"),
