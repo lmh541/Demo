@@ -17,7 +17,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 
 import org.apache.poi.common.usermodel.HyperlinkType;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFHyperlink;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.HSSFColor.HSSFColorPredefined;
@@ -28,11 +27,7 @@ import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
 
-
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -43,6 +38,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import kr.co.divus.home.service.DoctorCarService;
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 @Controller
 @RequestMapping("/admin")
@@ -53,6 +50,8 @@ public class DoctorCarController {
 
     @Autowired
     private DoctorCarService doctorCarService;
+
+    private static String[] cellHeader = {"날짜","업체명","SRC", "AI", "HUMAN", "AI_scratch", "AI_crack", "AI_dent", "AN_scratch", "AN_crack", "AN_dent", "Difference"};
 
 
     @GetMapping("/doc")
@@ -77,19 +76,18 @@ public class DoctorCarController {
     public String excelDown(HttpServletResponse response, HttpServletRequest request,@RequestBody JsonNode jsonNode) throws Exception{
 
         String res = "";
+
         HSSFWorkbook wb = new HSSFWorkbook();
         Sheet sheet = wb.createSheet("Doctor car");
         String host = request.getHeader("Host");
 
-        Row row = null;
-        Cell cell = null;
-        int rowNo = 0;
         ObjectMapper mapper = new ObjectMapper();
-        JSONParser jsonParser = new JSONParser();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         format.setTimeZone(TimeZone.getTimeZone("Asia/Seoul"));
         mapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         mapper.setDateFormat(format);
+
+        int rowNo = 0;
         
         // table header style
         CellStyle headStyle = wb.createCellStyle();
@@ -109,143 +107,43 @@ public class DoctorCarController {
         // 배경색 설정
         headStyle.setFillForegroundColor(HSSFColorPredefined.YELLOW.getIndex());
         headStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+
+        Row rowHeader = sheet.createRow(rowNo++);
+        for(int i=0; i<cellHeader.length; i++){
+            Cell cell = rowHeader.createCell(i);
+            cell.setCellStyle(headStyle);
+            cell.setCellValue(cellHeader[i]);
+        }
         // header 생성
-        row = sheet.createRow(rowNo++);
-        cell = row.createCell(0);
-        cell.setCellStyle(headStyle);
-        cell.setCellValue("날짜");
-
-        cell = row.createCell(1);
-        cell.setCellStyle(headStyle);
-        cell.setCellValue("업체명");
-
-        cell = row.createCell(2);
-        cell.setCellStyle(headStyle);
-        cell.setCellValue("SRC");
-
-        cell = row.createCell(3);
-        cell.setCellStyle(headStyle);
-        cell.setCellValue("AI");
-
-        cell = row.createCell(4);
-        cell.setCellStyle(headStyle);
-        cell.setCellValue("HUMAN");
-
-        cell = row.createCell(5);
-        cell.setCellStyle(headStyle);
-        cell.setCellValue("AI_scratch");
-
-        cell = row.createCell(6);
-        cell.setCellStyle(headStyle);
-        cell.setCellValue("AI_crack");
-
-        cell = row.createCell(7);
-        cell.setCellStyle(headStyle);
-        cell.setCellValue("AI_dent");
-
-        cell = row.createCell(8);
-        cell.setCellStyle(headStyle);
-        cell.setCellValue("AN_scratch");
-
-        cell = row.createCell(9);
-        cell.setCellStyle(headStyle);
-        cell.setCellValue("AN_crack");
-
-        cell = row.createCell(10);
-        cell.setCellStyle(headStyle);
-        cell.setCellValue("AN_dent");
-
-        cell = row.createCell(11);
-        cell.setCellStyle(headStyle);
-        cell.setCellValue("Difference");
-
+        
         for(int i=0; i<jsonNode.size(); i++){
             String jsonStr = mapper.writeValueAsString(jsonNode.get(i));
-            Object obj = jsonParser.parse(jsonStr);
-            JSONObject jsonObject = (JSONObject)obj;
-            row = sheet.createRow(rowNo++);
-            for(int j=0; j < 12; j++){
-                cell = row.createCell(j);
+            jsonStr = jsonStr.replace(",", "}, {");
+            jsonStr = "[" + jsonStr + "]";
+
+            // Object -> JSON
+            JSONArray arr = JSONArray.fromObject(jsonStr);
+            Row row = sheet.createRow(rowNo++);
+            for(int j=0; j < arr.size(); j++){
+                Cell cell = row.createCell(j);
                 cell.setCellStyle(bodyStyle);
-                if(j==0){
-                    cell.setCellValue(jsonObject.get("reg_date").toString());
-                    sheet.autoSizeColumn(j);
-                }else if(j==1){
-                    cell.setCellValue(jsonObject.get("company").toString());
-                    sheet.autoSizeColumn(j);
-                }else if(j==2){
-                    if(jsonObject.get("src_photo").toString().equals("ori.png")){
-                        cell.setCellValue(jsonObject.get("src_photo").toString());
-                    }else{ 
-                        HSSFHyperlink src_link = wb.getCreationHelper().createHyperlink(HyperlinkType.URL);
-                        cell.setCellValue(jsonObject.get("src_photo").toString());
-                        src_link.setAddress("http://" + host + "/photo/" + jsonObject.get("src_photo").toString());          
-                        cell.setHyperlink(src_link);
-                    }
-                    sheet.autoSizeColumn(j);
-                }else if(j==3){
-                    if(jsonObject.get("ai_photo").toString().equals("ai.png")){
-                        cell.setCellValue(jsonObject.get("ai_photo").toString());
+                JSONObject jsonValue = arr.getJSONObject(j);
+                String value = jsonValue.getString(jsonValue.keys().next().toString());
+                if(j > 4 || j<2){
+                    if(value != null && value != "null"){
+                        cell.setCellValue(value);
                     }else{
-                        HSSFHyperlink ai_link = wb.getCreationHelper().createHyperlink(HyperlinkType.URL);
-                        cell.setCellValue(jsonObject.get("ai_photo").toString());
-                        ai_link.setAddress("http://" + host + "/photo/" + jsonObject.get("ai_photo").toString());
-                        cell.setHyperlink(ai_link);
-                        
-                    }
-                    sheet.autoSizeColumn(j);
-                }else if(j==4){
-                    if(jsonObject.get("an_photo").toString().equals("ano.png")){
-                        cell.setCellValue(jsonObject.get("an_photo").toString());
-                    }else{
-                        HSSFHyperlink an_link = wb.getCreationHelper().createHyperlink(HyperlinkType.URL);
-                        cell.setCellValue(jsonObject.get("an_photo").toString());
-                        an_link.setAddress("http://" + host + "/photo/" + jsonObject.get("an_photo").toString());
-                        cell.setHyperlink(an_link);
-                    }
-                    sheet.autoSizeColumn(j);
-                }else if(j==5){
-                    cell.setCellValue(jsonObject.get("ai_scratch").toString());
-                    sheet.autoSizeColumn(j);
-                }else if(j==6){
-                    cell.setCellValue(jsonObject.get("ai_dent").toString());
-                    sheet.autoSizeColumn(j);
-                }else if(j==7){
-                    cell.setCellValue(jsonObject.get("ai_crack").toString());
-                    sheet.autoSizeColumn(j);
-                }else if(j==8){
-                    if(jsonObject.get(jsonObject.get("an_scratch")) ==null){
                         cell.setCellValue("-");
-                    }else{
-                        cell.setCellValue(jsonObject.get("an_scratch").toString());
                     }
-                    sheet.autoSizeColumn(j);
-                }else if(j==9){
-                    if(jsonObject.get(jsonObject.get("an_scratch")) ==null){
-                        cell.setCellValue("-");
-                    }else{
-                        cell.setCellValue(jsonObject.get("an_dent").toString());
-                    }
-                    sheet.autoSizeColumn(j);
-                }else if(j==10){
-                    if(jsonObject.get(jsonObject.get("an_scratch")) ==null){
-                        cell.setCellValue("-");
-                    }else{
-                        cell.setCellValue(jsonObject.get("an_crack").toString());
-                    }
-                    sheet.autoSizeColumn(j);
-                }else if(j==11){
-                    if(jsonObject.get(jsonObject.get("difference")) == null){
-                        cell.setCellValue("-");
-                    }else{
-                        cell.setCellValue(jsonObject.get("difference").toString());
-                    }
-                    sheet.autoSizeColumn(j);
+                }else{
+                    cell.setCellValue(value);
+                    HSSFHyperlink link = wb.getCreationHelper().createHyperlink(HyperlinkType.URL);
+                    link.setAddress("http://" + host + "/photo/" + value);
+                    cell.setHyperlink(link);
                 }
+                sheet.autoSizeColumn(j);
             }
         }
-//        response.setContentType("ms-vnd/excel");
-//        response.setHeader("Content-Disposition", "attachment;filename="+ getCurrentTimeStamp() + ".xls");
 
         String fileName = getCurrentTimeStamp();
 

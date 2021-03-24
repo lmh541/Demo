@@ -74,17 +74,15 @@ public class RootController {
          boolean isPasswordMatch = passwordEncoder.matches(pwInfo, adminVO.getPw());
 
          if (adminVO.getId().equals(idInfo) && isPasswordMatch == true) {
-
-            res.addHeader("Authorization", getToken(idInfo, pwInfo));
-
             HttpSession session = req.getSession(true);
             session.setAttribute("menu_func", Integer.toString(adminVO.getMenu_func()));
             session.setAttribute("user_idx", Integer.toString(adminVO.getIdx()));
+            // session.setAttribute("page", text);
             session.setMaxInactiveInterval(3600);
 
-            String page = (String) session.getAttribute("menu_func");
+            // String page = (String)session.getAttribute("page");/
 
-            if (page == null || page.isEmpty() == true) {
+            if (session.getAttribute("page") == null) {
                return "/";
             } else if(session.getAttribute("page").equals("DamageDetection")){
                return "/DamageDetection";
@@ -227,7 +225,6 @@ public class RootController {
                   || sessionFunc.isEmpty() == true) {
                return res;
             }
-
             if (resVO != null) {
                res = sessionData.equals(Integer.toString(resVO.getIdx()));
             }

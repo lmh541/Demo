@@ -2,7 +2,7 @@ package kr.co.divus.home.service;
 
 import java.util.List;
 
-import org.json.simple.JSONObject;
+import net.sf.json.JSONObject;
 
 public interface DoctorCarService {
 

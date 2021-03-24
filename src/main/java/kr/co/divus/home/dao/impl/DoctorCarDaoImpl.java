@@ -3,7 +3,7 @@ package kr.co.divus.home.dao.impl;
 import java.util.List;
 
 import org.apache.ibatis.session.SqlSession;
-import org.json.simple.JSONObject;
+import net.sf.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 

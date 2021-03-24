@@ -1,8 +1,7 @@
 package kr.co.divus.home.dao;
 
 import java.util.List;
-
-import org.json.simple.JSONObject;
+import net.sf.json.JSONObject;
 
 public interface DoctorCarDao {
     List<Object> selectSearchDoc(JSONObject jsonObject);
