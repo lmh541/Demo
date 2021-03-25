@@ -148,7 +148,7 @@ public class RootController {
       }
    }
 
-   @RequestMapping("/anpr")
+   @RequestMapping("/ANPR")
    public String anpr(HttpServletRequest req, RedirectAttributes rttr) {
       int ret = user_func(req);
       System.out.println(ret);
@@ -164,61 +164,7 @@ public class RootController {
       }
    }
 
-   // @RequestMapping("/Evaluation")
-   // public String test(HttpServletRequest req, RedirectAttributes rttr) {
-   //    HttpSession session = req.getSession();
 
-   //    if(checkSession((String) session.getAttribute("user_idx"), (String)session.getAttribute("menu_func")) ==false){
-   //       return "login";
-   //    }
-
-   //    String menu_func = (String) session.getAttribute("menu_func");
-   //    int func = Integer.parseInt(menu_func);
-      
-   //    if ((func & 128) == 128) {
-   //       return "DamageDetection";
-   //    } else {
-   //       return "login";
-   //    }
-   // }
-
-   // @RequestMapping("/CarSegment")
-   // public String seg(HttpServletRequest req, RedirectAttributes rttr) {
-   //    HttpSession session = req.getSession();
-
-   //    if(checkSession((String) session.getAttribute("user_idx"), (String)session.getAttribute("menu_func")) ==false){
-   //       return "login";
-   //    }
-
-   //    String menu_func = (String) session.getAttribute("menu_func");
-   //    int func = Integer.parseInt(menu_func);
-      
-   //    if ((func & 128) == 128) {
-   //       return "DamageDetection";
-   //    } else {
-   //       return "login";
-   //    }
-   // }
-
-   // @RequestMapping("/CarPartSegment")
-   // public String partSeg(HttpServletRequest req, RedirectAttributes rttr) {
-   //    HttpSession session = req.getSession();
-
-   //    if(checkSession((String) session.getAttribute("user_idx"), (String)session.getAttribute("menu_func")) ==false){
-   //       return "login";
-   //    }
-
-   //    String menu_func = (String) session.getAttribute("menu_func");
-   //    int func = Integer.parseInt(menu_func);
-      
-   //    if ((func & 128) == 128) {
-   //       return "DamageDetection";
-   //    } else {
-   //       return "login";
-   //    }
-   // }
-
-   
 
    @RequestMapping("/contact")
    public String contectPage() {
