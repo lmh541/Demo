@@ -76,27 +76,14 @@ public class RootController {
             HttpSession session = req.getSession(true);
             session.setAttribute("menu_func", Integer.toString(adminVO.getMenu_func()));
             session.setAttribute("user_idx", Integer.toString(adminVO.getIdx()));
-            // session.setAttribute("page", text);
             session.setMaxInactiveInterval(3600);
 
-            // String page = (String)session.getAttribute("page");/
+            String page = (String) session.getAttribute("menu_func");
 
-            if (session.getAttribute("page") == null) {
+            if (page == null || page.isEmpty() == true) {
                return "/";
-            } else if (session.getAttribute("page").equals("DamageDetection")) {
-               return "/DamageDetection";
-            } else if (session.getAttribute("page").equals("textRecognition")) {
-               return "/textRecognition";
-            } else if (session.getAttribute("page").equals("vin")) {
-               return "/vin";
-            } else if (session.getAttribute("page").equals("Evaluation")) {
-               return "/Evaluation";
-            } else if (session.getAttribute("page").equals("CarSegment")) {
-               return "/CarSegment";
-            } else if (session.getAttribute("page").equals("CarPartSegment")) {
-               return "/CarPartSegment";
             } else {
-               return "/anpr";
+               return "/";
             }
          } else {
             return "login";
