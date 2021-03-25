@@ -124,6 +124,7 @@ public class APIController {
 
         HttpSession session = req.getSession(true);
         AdminVO adminVO = new AdminVO();
+        System.out.println(session.getAttribute("menu_func"));
         
         if(session.getAttribute("menu_func").equals(null)){
             return null;
@@ -158,6 +159,7 @@ public class APIController {
 
             ObjectMapper mapper = new ObjectMapper();
             JsonNode node = mapper.readTree("{ \"request\" : " + json + ", \"response\" : " + returnNode.toString() + "}");
+            System.out.println(detectionService.makeAiPhoto(resVO.getIdx(), node));
             List<DetectionVO> listVO = detectionService.makeAiPhoto(resVO.getIdx(), node);
             for (DetectionVO detectionVO : listVO) {
                 detectionService.insert(detectionVO);
