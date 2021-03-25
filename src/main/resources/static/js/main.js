@@ -24,18 +24,12 @@ if (localStorage.getItem("login") === "true") {
 				$('.js-gtco-nav-toggle').addClass('');
 
 				if ($('body').hasClass('offcanvas')) {
-
 					$('body').removeClass('offcanvas');
 					$('.js-gtco-nav-toggle').removeClass('active');
-
 				}
-
-
 			}
 		});
-
 	};
-
 
 	var offcanvasMenu = function () {
 
