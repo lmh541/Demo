@@ -77,6 +77,7 @@ public class RootController {
             session.setAttribute("menu_func", Integer.toString(adminVO.getMenu_func()));
             session.setAttribute("user_idx", Integer.toString(adminVO.getIdx()));
             session.setMaxInactiveInterval(3600);
+            
 
             String page = (String) session.getAttribute("menu_func");
 
@@ -103,7 +104,6 @@ public class RootController {
    @RequestMapping("/DamageDetection")
    public String damageDetection(HttpServletRequest req, RedirectAttributes rttr, Model model) {
       int ret = user_func(req);
-      System.out.println(ret);
 
       if(ret == -1){
          return "login";
@@ -119,7 +119,6 @@ public class RootController {
    @RequestMapping("/textRecognition")
    public String textRec(HttpServletRequest req, RedirectAttributes rttr, Model model) {
       int ret = user_func(req);
-      System.out.println(ret);
 
       if(ret == -1){
          return "login";
@@ -135,7 +134,6 @@ public class RootController {
    @RequestMapping("/vin")
    public String vin(HttpServletRequest req, RedirectAttributes rttr, Model model) {
       int ret = user_func(req);
-      System.out.println(ret);
 
       if(ret == -1){
          return "login";
@@ -151,7 +149,6 @@ public class RootController {
    @RequestMapping("/ANPR")
    public String anpr(HttpServletRequest req, RedirectAttributes rttr) {
       int ret = user_func(req);
-      System.out.println(ret);
 
       if(ret == -1){
          return "login";
@@ -163,8 +160,6 @@ public class RootController {
          return "login";
       }
    }
-
-
 
    @RequestMapping("/contact")
    public String contectPage() {
