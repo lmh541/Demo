@@ -172,15 +172,15 @@ public class RootController {
       }
    }
 
-   @RequestMapping("/anpr")
+   @RequestMapping("/ANPR")
    public String anpr(HttpServletRequest req, RedirectAttributes rttr) {
-      String text = "anpr";
+      String text = "ANPR";
       int session = user_session(req, rttr, text);
 
       if (session == -1) {
          return "login";
       } else {
-         return "anpr";
+         return "ANPR";
       }
    }
 
