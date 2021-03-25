@@ -1,3 +1,17 @@
+
+$("#nav-logout").on("click", function () {
+	localStorage.setItem("login", false);
+})
+if (localStorage.getItem("login") === "true") {
+	console.log(1)
+	$("#nav-login")[0].style.display = "none";
+	$("#nav-logout")[0].style.display = "inline-block";
+} else {
+	console.log(2)
+	$("#nav-login")[0].style.display = "inline-block";
+	$("#nav-logout")[0].style.display = "none";
+}
+
 ; (function () {
 
 	'use strict';

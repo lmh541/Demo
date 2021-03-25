@@ -198,7 +198,7 @@ $(document).ready(function () {
               // `;
 
               for (let i = 0; i < predict_result.pred_char_class.length; i++)
-                typeTxt.innerHTML += `'${predict_result.pred_char_class[i]}' `;
+                typeTxt.innerHTML += `'${predict_result.pred_char_class[i]}'`;
               typeTxt.innerHTML += ` / ${parseFloat(predict_result.minimum_pred_char_conf * 100).toFixed(2) + '%'}  &  `;
               typeTxt.innerHTML += `<b>NP</b>: '${predict_result.pred_text}' / ${parseFloat(predict_result.pred_np_conf * 100).toFixed(2) + '%'}`
 

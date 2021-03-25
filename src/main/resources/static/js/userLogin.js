@@ -27,6 +27,9 @@ $(function () {
                 alert("에러가 발생했습니다..");
             },
             success: function (data, textStatus, request) {
+                console.log(data);
+                if (data !== "login")
+                    localStorage.setItem("login", true);
                 if (data) window.location.href = data;
             }
         })
