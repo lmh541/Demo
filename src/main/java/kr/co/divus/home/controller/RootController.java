@@ -77,6 +77,7 @@ public class RootController {
             session.setAttribute("menu_func", Integer.toString(adminVO.getMenu_func()));
             session.setAttribute("user_idx", Integer.toString(adminVO.getIdx()));
             session.setMaxInactiveInterval(3600);
+            
 
             String page = (String) session.getAttribute("menu_func");
 
@@ -102,85 +103,61 @@ public class RootController {
 
    @RequestMapping("/DamageDetection")
    public String damageDetection(HttpServletRequest req, RedirectAttributes rttr, Model model) {
-      String text = "DamageDetection";
-      int session = user_session(req, rttr, text);
+      int ret = user_func(req);
 
-      if (session == -1) {
+      if(ret == -1){
          return "login";
-      } else {
+      }
+
+      if((ret & 128) == 128){
          return "DamageDetection";
+      }else{
+         return "login";
       }
    }
 
    @RequestMapping("/textRecognition")
    public String textRec(HttpServletRequest req, RedirectAttributes rttr, Model model) {
-      String text = "textRecognition";
-      int session = user_session(req, rttr, text);
+      int ret = user_func(req);
 
-      if (session == -1) {
+      if(ret == -1){
          return "login";
-      } else {
+      }
+
+      if((ret & 64) == 64){
          return "textRec";
+      }else{
+         return "login";
       }
    }
 
    @RequestMapping("/vin")
    public String vin(HttpServletRequest req, RedirectAttributes rttr, Model model) {
-      String text = "vin";
-      int session = user_session(req, rttr, text);
+      int ret = user_func(req);
 
-      if (session == -1) {
+      if(ret == -1){
          return "login";
-      } else {
+      }
+
+      if((ret & 32) == 32){
          return "vin";
-      }
-   }
-
-   @RequestMapping("/Evaluation")
-   public String test(HttpServletRequest req, RedirectAttributes rttr) {
-      String text = "Evaluation";
-      int session = user_session(req, rttr, text);
-
-      if (session == -1) {
+      }else{
          return "login";
-      } else {
-         return "Evaluation";
-      }
-   }
-
-   @RequestMapping("/CarSegment")
-   public String seg(HttpServletRequest req, RedirectAttributes rttr) {
-      String text = "CarSegment";
-      int session = user_session(req, rttr, text);
-
-      if (session == -1) {
-         return "login";
-      } else {
-         return "CarSegment";
-      }
-   }
-
-   @RequestMapping("/CarPartSegment")
-   public String partSeg(HttpServletRequest req, RedirectAttributes rttr) {
-      String text = "CarPartSegment";
-      int session = user_session(req, rttr, text);
-
-      if (session == -1) {
-         return "login";
-      } else {
-         return "CarPartSegment";
       }
    }
 
    @RequestMapping("/ANPR")
    public String anpr(HttpServletRequest req, RedirectAttributes rttr) {
-      String text = "ANPR";
-      int session = user_session(req, rttr, text);
+      int ret = user_func(req);
 
-      if (session == -1) {
+      if(ret == -1){
          return "login";
-      } else {
+      }
+
+      if((ret & 16) == 16){
          return "ANPR";
+      }else{
+         return "login";
       }
    }
 
@@ -195,29 +172,35 @@ public class RootController {
    }
 
    private Boolean checkSession(String sessionData, String sessionFunc) {
-
       Boolean res = false;
       AdminVO adminVO = new AdminVO();
 
-      if (sessionData != null) {
+      if(sessionData != null && sessionFunc != null){
          int func = Integer.parseInt(sessionFunc);
-         if ((func & 128) == 128) {
+         adminVO.setIdx(Integer.parseInt(sessionData));
+         adminVO.setMenu_func(func);
 
-            adminVO.setIdx(Integer.parseInt(sessionData));
-            adminVO.setMenu_func(func);
-            AdminVO resVO = adminService.selectMenu(adminVO);
+         AdminVO resVO = adminService.selectMenu(adminVO);
 
-            if ((sessionData == null || sessionData.isEmpty() == true) || (sessionFunc == null)
-                  || sessionFunc.isEmpty() == true) {
-               return res;
-            }
-            if (resVO != null) {
-               res = sessionData.equals(Integer.toString(resVO.getIdx()));
-            }
+         if(resVO != null){
+            res = sessionData.equals(Integer.toString(resVO.getIdx()));
          }
          return res;
       }
       return res;
+   }
+
+   private int user_func(HttpServletRequest req){
+      HttpSession session = req.getSession();
+
+      if(checkSession((String) session.getAttribute("user_idx"), (String)session.getAttribute("menu_func")) ==false){
+         return -1;
+      }
+
+      String menu_func = (String) session.getAttribute("menu_func");
+      int func = Integer.parseInt(menu_func);
+      
+      return func;
    }
 
    public String getToken(String id, String pw) {
@@ -262,19 +245,5 @@ public class RootController {
       return "redirect:/admin/Home";
    }
 
-   // Session 유무 검사 : 존재하면 1, 존재하지 않으면 -1
-   private int user_session(HttpServletRequest req, RedirectAttributes rttr, String page) {
-      HttpSession session = req.getSession();
-
-      if (checkSession((String) session.getAttribute("user_idx"),
-            (String) session.getAttribute("menu_func")) == false) {
-         // session.invalidate();
-         session.setAttribute("page", page);
-
-         return -1;
-      }
-
-      return 1;
-   }
 
 }
