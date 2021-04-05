@@ -216,8 +216,9 @@ $(document).ready(function () {
 
               let polygon = bgJsonData.results[imgIdx].polygon;
 
-              ctx.strokeStyle = "rgba(255,0,0,0.2)";
-              ctx.lineWidth = 17;
+              // ctx.strokeStyle = "rgba(255,0,0,0.2)";
+              ctx.strokeStyle = "red";
+              ctx.lineWidth = 1;
               ctx.beginPath();
 
               for (let i = 0; i < polygon.length - 1; i++) {
@@ -230,7 +231,6 @@ $(document).ready(function () {
 
               ctx.closePath();
               ctx.stroke();
-
             }
           }
 

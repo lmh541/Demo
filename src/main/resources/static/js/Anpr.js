@@ -177,7 +177,7 @@ $(document).ready(function () {
             right: "3px",
             margin: 0,
             color: "red",
-            fontSize: "13px"
+            fontSize: "11px"
           })
 
           $(popupImg).css({
@@ -193,22 +193,26 @@ $(document).ready(function () {
             ctx.drawImage(imgObj, 0, 0, 500, 312);
             if (bgJsonData.results[imgIdx] !== undefined) {
               let predict_result = bgJsonData.results[imgIdx].predict_result;
+              console.log(predict_result);
               typeTxt.innerHTML = "<b>CHAR</b>: ";
               // char: ${predict_result + pred_char_class} ${parseFloat(predict_result.minimum_pred_char_conf * 100).toFixed(2) + '%'}
               // `;
 
               for (let i = 0; i < predict_result.pred_char_class.length; i++)
                 typeTxt.innerHTML += `'${predict_result.pred_char_class[i]}'`;
+
               typeTxt.innerHTML += ` / ${parseFloat(predict_result.minimum_pred_char_conf * 100).toFixed(2) + '%'}  &  `;
               typeTxt.innerHTML += `<b>NP</b>: '${predict_result.pred_text}' / ${parseFloat(predict_result.pred_np_conf * 100).toFixed(2) + '%'}`
 
               let char_box = predict_result.pred_char_boxes;
               let np_box = predict_result.pred_np_box;
 
-              ctx.strokeStyle = "red";
-              ctx.beginPath();
+
 
               for (let i = 0; i < char_box.length; i++) {
+                ctx.strokeStyle = predict_result.pred_char_conf[i] ? "red" : "blue";
+                ctx.beginPath();
+
                 ctx.moveTo((500 / imgW[imgIdx]) * char_box[i][0], (312 / imgH[imgIdx]) * char_box[i][1]);
                 ctx.lineTo((500 / imgW[imgIdx]) * char_box[i][2], (312 / imgH[imgIdx]) * char_box[i][1]);
 
@@ -220,8 +224,12 @@ $(document).ready(function () {
 
                 ctx.moveTo((500 / imgW[imgIdx]) * char_box[i][0], (312 / imgH[imgIdx]) * char_box[i][1]);
                 ctx.lineTo((500 / imgW[imgIdx]) * char_box[i][0], (312 / imgH[imgIdx]) * char_box[i][3]);
+
+                ctx.closePath();
+                ctx.stroke();
               }
 
+              ctx.beginPath();
 
               ctx.moveTo((500 / imgW[imgIdx]) * np_box[0], (312 / imgH[imgIdx]) * np_box[1]);
               ctx.lineTo((500 / imgW[imgIdx]) * np_box[2], (312 / imgH[imgIdx]) * np_box[1]);
@@ -234,7 +242,6 @@ $(document).ready(function () {
 
               ctx.moveTo((500 / imgW[imgIdx]) * np_box[0], (312 / imgH[imgIdx]) * np_box[1]);
               ctx.lineTo((500 / imgW[imgIdx]) * np_box[0], (312 / imgH[imgIdx]) * np_box[3]);
-
 
               ctx.closePath();
               ctx.stroke();
